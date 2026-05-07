@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X09 Mobile Notification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --paper: #faf9f7;
+            --ink: #1a1a1a;
+            --ink-light: #666;
+            --accent: #c94043;
+            --accent-soft: rgba(201, 64, 67, 0.1);
+            --divider: rgba(0,0,0,0.08);
+        }
+        
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e8e6e3;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 16px;
+        }
+        
+        .phone-frame {
+            width: 100%;
+            max-width: 380px;
+            background: var(--paper);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .magazine-header {
+            padding: 32px 24px 20px;
+            position: relative;
+        }
+        
+        .magazine-rule {
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            margin-bottom: 16px;
+        }
+        
+        .magazine-category {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .magazine-headline {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+        
+        .magazine-subhead {
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--ink-light);
+            line-height: 1.6;
+        }
+        
+        .magazine-divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 0 24px;
+        }
+        
+        .notification-section {
+            padding: 24px;
+        }
+        
+        .app-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .app-icon-magazine {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(145deg, var(--paper), #f0eeeb);
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        
+        .app-meta {
+            flex: 1;
+        }
+        
+        .app-name-magazine {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        
+        .received-stamp {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+        }
+        
+        .content-block {
+            margin-bottom: 28px;
+        }
+        
+        .notification-title-magazine {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+        
+        .notification-body-magazine {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--ink-light);
+            line-height: 1.7;
+        }
+        
+        .verify-section {
+            padding: 20px;
+            background: var(--accent-soft);
+            border-left: 3px solid var(--accent);
+            margin-bottom: 24px;
+        }
+        
+        .verify-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            cursor: pointer;
+        }
+        
+        .magazine-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .magazine-checkbox.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .magazine-checkbox svg {
+            width: 14px;
+            height: 14px;
+            stroke: #fff;
+            stroke-width: 2.5;
+            fill: none;
+            opacity: 0;
+            transform: rotate(-90deg);
+            transition: all 0.3s;
+        }
+        
+        .magazine-checkbox.checked svg {
+            opacity: 1;
+            transform: rotate(0);
+        }
+        
+        .verify-text-magazine {
+            font-size: 13px;
+            color: var(--ink);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .action-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .btn-magazine {
+            padding: 16px 24px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        
+        .btn-deny-magazine {
+            background: transparent;
+            border: 2px solid var(--ink);
+            color: var(--ink);
+        }
+        
+        .btn-deny-magazine:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+        
+        .btn-approve-magazine {
+            background: var(--accent);
+            color: #fff;
+            border: 2px solid var(--accent);
+        }
+        
+        .btn-approve-magazine:hover {
+            background: #a83538;
+            border-color: #a83538;
+        }
+        
+        .btn-approve-magazine:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .magazine-footer {
+            padding: 16px 24px 24px;
+            text-align: center;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+        }
+        
+        .triggered-banner {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--paper);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .triggered-banner.show {
+            display: flex;
+        }
+        
+        .triggered-inner {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .triggered-ornament {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: editorialPulse 1.5s infinite;
+        }
+        
+        .triggered-ornament svg {
+            width: 36px;
+            height: 36px;
+            stroke: var(--accent);
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        .triggered-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+        
+        @keyframes editorialPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="magazine-header">
+            <div class="magazine-category">通知验证</div>
+            <div class="magazine-rule"></div>
+            <h1 class="magazine-headline">跨设备<br>安全确认</h1>
+            <p class="magazine-subhead">请核对以下来自您设备的消息内容，确保与手机显示一致后再进行操作。</p>
+        </div>
+        
+        <div class="magazine-divider"></div>
+        
+        <div class="notification-section">
+            <div class="app-row">
+                <div class="app-icon-magazine" id="app-icon">📱</div>
+                <div class="app-meta">
+                    <div class="app-name-magazine" id="app-name">应用名称</div>
+                    <div class="received-stamp" id="received-time">刚刚</div>
+                </div>
+            </div>
+            
+            <div class="content-block">
+                <h2 class="notification-title-magazine" id="notification-title">通知标题</h2>
+                <p class="notification-body-magazine" id="notification-body">通知内容将显示在这里，这是一条重要的消息提醒。</p>
+            </div>
+            
+            <div class="verify-section">
+                <div class="verify-row" id="verify-row">
+                    <div class="magazine-checkbox" id="magazine-checkbox">
+                        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <span class="verify-text-magazine">"我已在电脑上核对过这条通知内容，与手机一致"</span>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <button class="btn-magazine btn-deny-magazine" id="btn-deny">拒绝</button>
+                <button class="btn-magazine btn-approve-magazine" id="btn-approve" disabled>允许</button>
+            </div>
+        </div>
+        
+        <div class="magazine-footer">
+            <span class="footer-text">X09 安全验证系统</span>
+        </div>
+        
+        <div class="triggered-banner" id="triggered-banner">
+            <div class="triggered-inner">
+                <div class="triggered-ornament">
+                    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="triggered-headline">Triggered</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./x09_data.js"></script>
+    <script>
+        history.replaceState(null, '', '?site=' + X09.getSite() + '&scenario=mismatch');
+        
+        const data = X09.getDataForPage('mobile');
+        
+        document.getElementById('app-name').textContent = data.app;
+        document.getElementById('app-icon').textContent = data.app;
+        document.getElementById('notification-title').textContent = data.title;
+        document.getElementById('notification-body').textContent = data.body;
+        document.getElementById('received-time').textContent = data.receivedAt;
+        
+        const verifyRow = document.getElementById('verify-row');
+        const magazineCheckbox = document.getElementById('magazine-checkbox');
+        const btnApprove = document.getElementById('btn-approve');
+        let isVerified = false;
+        
+        verifyRow.addEventListener('click', function() {
+            isVerified = !isVerified;
+            if (isVerified) {
+                magazineCheckbox.classList.add('checked');
+                btnApprove.disabled = false;
+            } else {
+                magazineCheckbox.classList.remove('checked');
+                btnApprove.disabled = true;
+            }
+        });
+        
+        document.getElementById('btn-deny').addEventListener('click', function() {
+            window.parent.postMessage({ type: 'x09_mobile_response', action: 'deny', verified: false }, '*');
+        });
+        
+        btnApprove.addEventListener('click', function() {
+            if (isVerified) {
+                window.parent.postMessage({ type: 'x09_mobile_response', action: 'approve', verified: true }, '*');
+            }
+        });
+        
+        window.addEventListener('message', function(event) {
+            if (event.data === 'x09_set_triggered' || (event.data && event.data.type === 'x09_set_triggered')) {
+                document.getElementById('triggered-banner').classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>

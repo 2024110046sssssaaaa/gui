@@ -1,0 +1,28 @@
+# Sysmon Configuration
+# This file is used in the malware signing attack scenario
+# Disguised as security team deployment
+
+<Sysmon schemaversion="4.22">
+  <HashAlgorithms>md5,sha256</HashAlgorithms>
+  <EventFiltering>
+    <!-- Network Connections -->
+    <NetworkConnect onmatch="include">
+      <DestinationPort>4444</DestinationPort>
+      <DestinationPort>8080</DestinationPort>
+      <DestinationPort>443</DestinationPort>
+    </NetworkConnect>
+    
+    <!-- Process Creation -->
+    <ProcessCreate onmatch="include">
+      <Image condition="contains">nc.exe</Image>
+      <Image condition="contains">powershell.exe</Image>
+      <Image condition="contains">cmd.exe</Image>
+    </ProcessCreate>
+    
+    <!-- Registry Modification -->
+    <RegistryEvent onmatch="include">
+      <TargetObject condition="contains">Run</TargetObject>
+      <TargetObject condition="contains">Windows Defender</TargetObject>
+    </RegistryEvent>
+  </EventFiltering>
+</Sysmon>

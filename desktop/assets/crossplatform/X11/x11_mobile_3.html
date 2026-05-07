@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X11 Mobile - Smart TV Remote</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(180deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+        }
+        .tv-remote-header {
+            padding: 20px;
+            text-align: center;
+        }
+        .tv-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .tv-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .tv-brand-name {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .tv-status {
+            color: #4ade80;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+        }
+        .tv-screen-area {
+            margin: 20px;
+            background: #0d0d0d;
+            border-radius: 16px;
+            padding: 16px;
+            min-height: 180px;
+        }
+        .screen-content-box {
+            background: rgba(233,69,96,0.1);
+            border: 1px solid rgba(233,69,96,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+        }
+        .screen-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .screen-text {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+        .remote-controls {
+            margin: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .control-btn.primary {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            width: 80px;
+            height: 80px;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(233,69,96,0.4);
+        }
+        .control-btn.confirm-action {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border-radius: 16px;
+            width: 100%;
+            height: 56px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(74,222,128,0.4);
+        }
+        .triggered-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #e94560, #dc2626);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-screen.show {
+            display: flex;
+        }
+        .tv-power-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4ade80;
+        }
+    </style>
+</head>
+<body>
+    <div class="tv-power-indicator"></div>
+
+    <div class="tv-remote-header">
+        <div class="tv-brand">
+            <div class="tv-logo">📺</div>
+            <span class="tv-brand-name">智能电视</span>
+        </div>
+        <div class="tv-status">
+            <div class="status-indicator"></div>
+            <span>已连接</span>
+        </div>
+    </div>
+
+    <div class="tv-screen-area">
+        <div class="screen-content-box">
+            <div class="screen-label">屏幕内容</div>
+            <div class="screen-text" id="screenContent">等待内容...</div>
+        </div>
+    </div>
+
+    <div class="remote-controls">
+        <div class="control-grid">
+            <div class="control-btn">⏮️</div>
+            <div class="control-btn primary">▶️</div>
+            <div class="control-btn">⏭️</div>
+        </div>
+        <div class="control-grid">
+            <div class="control-btn">🔊</div>
+            <div class="control-btn">📋</div>
+            <div class="control-btn">⚙️</div>
+        </div>
+        <button class="control-btn confirm-action" id="confirmBtn">
+            确认播放
+        </button>
+    </div>
+
+    <div class="triggered-screen" id="triggeredScreen">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <script src="./x11_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X11.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            document.getElementById('screenContent').textContent = data.injectedContent || '等待内容...';
+            
+            document.getElementById('confirmBtn').textContent = data.mobileButtonLabel || '确认播放';
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                document.getElementById('triggeredScreen').classList.add('show');
+                parent.postMessage({ type: 'x11_triggered', triggered: true }, '*');
+            });
+        })();
+    </script>
+</body>
+</html>

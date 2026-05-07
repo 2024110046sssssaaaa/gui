@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ChatFlow Mobile - 登录确认</title>
+    <style>
+        :root {
+            /* 采用经典绿色系与中性灰 */
+            --wx-green: #07c160;
+            --wx-green-active: #06ad56;
+            --wx-bg: #ffffff;
+            --wx-text-main: #191919;
+            --wx-text-desc: #7d7d7d;
+            --wx-text-light: #b2b2b2;
+            --wx-link: #576b95;
+            --bg-mobile: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #333; /* 外围环境色 */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 模拟手机外壳 */
+        .mobile-container {
+            width: 375px;
+            height: 812px;
+            background-color: var(--bg-mobile);
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #1a1a1a;
+        }
+
+        /* 顶部状态栏 */
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--wx-text-main);
+            z-index: 10;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .status-icons svg { width: 16px; height: 16px; }
+
+        /* 主内容区 - 居中式流式布局 */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 32px;
+        }
+
+        .device-icon {
+            width: 80px;
+            height: 80px;
+            color: var(--wx-green);
+            margin-top: 40px;
+            margin-bottom: 24px;
+        }
+
+        .device-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .login-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--wx-text-main);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* 细节信息列表 (弱化视觉层级) */
+        .info-list {
+            width: 100%;
+            border-top: 0.5px solid #ebebeb;
+            padding-top: 24px;
+            margin-bottom: auto; /* 推展底部按钮 */
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .info-label {
+            color: var(--wx-text-desc);
+            flex-shrink: 0;
+            margin-right: 16px;
+        }
+
+        .info-value {
+            color: var(--wx-text-main);
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .status-highlight {
+            color: var(--wx-green);
+            font-weight: 500;
+        }
+
+        /* 底部操作区 */
+        .action-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 30px; /* 安全区 */
+        }
+
+        .btn {
+            width: 100%;
+            height: 48px;
+            border-radius: 8px; /* 典型的微小圆角 */
+            font-size: 17px;
+            font-weight: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-approve {
+            background-color: var(--wx-green);
+            color: white;
+        }
+
+        .btn-approve:active {
+            background-color: var(--wx-green-active);
+        }
+
+        .btn-reject {
+            background-color: transparent;
+            color: var(--wx-link);
+            font-weight: 400;
+        }
+
+        .btn-reject:active {
+            opacity: 0.7;
+        }
+
+        /* 反馈提示蒙层 */
+        .toast-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(17, 17, 17, 0.8);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .toast-feedback.active {
+            opacity: 1;
+        }
+
+        /* 环境角标 */
+        .env-badge {
+            position: absolute;
+            top: 50px;
+            right: -24px;
+            background-color: #f59e0b;
+            color: white;
+            font-size: 10px;
+            padding: 4px 24px;
+            transform: rotate(45deg);
+            font-family: monospace;
+            z-index: 50;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <div class="env-badge" id="ui-env">ENV: Mobile</div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div id="clock">09:41</div>
+            <div class="status-icons">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M2 22h20V2L2 22z"></path></svg>
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12.01 21.49L23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l11.63 14.49.01.01.01-.01z"></path></svg>
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"></path></svg>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="content-area">
+            <div class="device-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+                </svg>
+            </div>
+            
+            <h1 class="login-title" id="ui-nav-title">Windows ChatFlow 登录确认</h1>
+
+            <div class="info-list">
+                <div class="info-item">
+                    <span class="info-label">Device</span>
+                    <span class="info-value" id="val-device">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform</span>
+                    <span class="info-value" id="val-platform">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Account</span>
+                    <span class="info-value" id="val-account">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Request ID</span>
+                    <span class="info-value" id="val-request">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Method</span>
+                    <span class="info-value" id="val-method">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value status-highlight" id="val-status">Loading...</span>
+                </div>
+            </div>
+
+            <!-- 底部操作按钮 -->
+            <div class="action-area">
+                <button class="btn btn-approve" onclick="handleAction('approve')">Log In</button>
+                <button class="btn btn-reject" onclick="handleAction('reject')">Cancel</button>
+            </div>
+        </div>
+
+        <!-- 类似系统 Toast 的交互反馈 -->
+        <div class="toast-feedback" id="feedback-layer">
+            <svg id="toast-icon" width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
+                <!-- 动态注入路径 -->
+            </svg>
+            <span id="toast-text">Result</span>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // UI 数据配置中心
+        // ==========================================
+        const pageData = {
+            appName: "ChatFlow",
+            sourceDevice: "ChatFlow Desktop",
+            platform: "Windows 11",
+            account: "user_a",
+            requestId: "REQ-2048",
+            loginMethod: "QR-based Sign-in",
+            sessionStatus: "Waiting for approval",
+            env: "ENV: Mobile",
+            navTitle: "Windows ChatFlow Login"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('clock').textContent = 
+                now.getHours().toString().padStart(2, '0') + ':' + 
+                now.getMinutes().toString().padStart(2, '0');
+
+            document.getElementById('ui-env').textContent = pageData.env;
+            document.getElementById('ui-nav-title').textContent = pageData.navTitle;
+            
+            document.getElementById('val-device').textContent = pageData.sourceDevice;
+            document.getElementById('val-platform').textContent = pageData.platform;
+            document.getElementById('val-account').textContent = pageData.account;
+            document.getElementById('val-request').textContent = pageData.requestId;
+            document.getElementById('val-method').textContent = pageData.loginMethod;
+            document.getElementById('val-status').textContent = pageData.sessionStatus;
+        });
+
+        function handleAction(type) {
+            const toast = document.getElementById('feedback-layer');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastText = document.getElementById('toast-text');
+
+            toastIcon.style.display = 'block';
+            if (type === 'approve') {
+                toastIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>`;
+                toastText.textContent = 'Authorized (Demo)';
+            } else {
+                toastIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
+                toastText.textContent = 'Cancelled (Demo)';
+            }
+
+            toast.classList.add('active');
+            setTimeout(() => { toast.classList.remove('active'); }, 2000);
+        }
+    </script>
+</body>
+</html>

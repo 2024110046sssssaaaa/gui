@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X12 Mobile - WeChat Paste Dialog</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            background: #ededed;
+            min-height: 100vh;
+        }
+        .wechat-header {
+            background: #2a2a2a;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .menu-btn {
+            color: #fff;
+            font-size: 20px;
+        }
+        .chat-title {
+            flex: 1;
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .search-btn {
+            color: #fff;
+            font-size: 20px;
+        }
+        .chat-area {
+            flex: 1;
+            padding: 20px 16px;
+        }
+        .message-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .header-icon {
+            font-size: 20px;
+        }
+        .header-title {
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .message-content {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .paste-dialog {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            max-height: 70vh;
+            overflow: hidden;
+        }
+        .dialog-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .dialog-title {
+            color: #333;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .close-btn {
+            color: #999;
+            font-size: 24px;
+        }
+        .dialog-body {
+            padding: 20px;
+        }
+        .prompt-box {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .prompt-label {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .prompt-text {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .paste-input {
+            width: 100%;
+            min-height: 120px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .paste-input:focus {
+            border-color: #07c160;
+        }
+        .dialog-footer {
+            padding: 16px 20px;
+            display: flex;
+            gap: 12px;
+        }
+        .cancel-btn {
+            flex: 1;
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .confirm-btn {
+            flex: 1;
+            background: #07c160;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .wechat-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #f7f7f7;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #d9d9d9;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: #999;
+            font-size: 10px;
+        }
+        .nav-item.active {
+            color: #07c160;
+        }
+        .nav-icon {
+            font-size: 24px;
+        }
+        .triggered-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(7,193,96,0.95);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-overlay.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="wechat-header">
+        <span class="menu-btn">☰</span>
+        <span class="chat-title" id="chatTitle">微信团队</span>
+        <span class="search-btn">🔍</span>
+    </div>
+
+    <div class="chat-area">
+        <div class="message-card">
+            <div class="message-header">
+                <span class="header-icon">📋</span>
+                <span class="header-title">Prompt</span>
+            </div>
+            <div class="message-content" id="promptText">
+                加载中...
+            </div>
+        </div>
+    </div>
+
+    <div class="paste-dialog">
+        <div class="dialog-header">
+            <span class="dialog-title">粘贴内容</span>
+            <span class="close-btn">×</span>
+        </div>
+        <div class="dialog-body">
+            <div class="prompt-box">
+                <div class="prompt-label">需要粘贴的内容</div>
+                <div class="prompt-text" id="promptPreview">查看上方Prompt</div>
+            </div>
+            <textarea class="paste-input" id="pasteInput" placeholder="在此粘贴内容..."></textarea>
+        </div>
+        <div class="dialog-footer">
+            <button class="cancel-btn" id="cancelBtn">取消</button>
+            <button class="confirm-btn" id="confirmBtn">确认</button>
+        </div>
+    </div>
+
+    <div class="wechat-nav">
+        <div class="nav-item">
+            <span class="nav-icon">💬</span>
+            <span>聊天</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📞</span>
+            <span>通讯录</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">🔍</span>
+            <span>发现</span>
+        </div>
+        <div class="nav-item active">
+            <span class="nav-icon">👤</span>
+            <span>我</span>
+        </div>
+    </div>
+
+    <div class="triggered-overlay" id="triggeredOverlay">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <script src="./x12_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X12.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X12.getData();
+            const site = X12.getSite();
+            
+            document.getElementById('chatTitle').textContent = data.mobileTitle;
+            document.getElementById('promptText').textContent = data.mobilePrompt;
+            document.getElementById('promptPreview').textContent = data.mobilePrompt;
+            
+            const poisonContent = data.poisonContent;
+            const pasteInput = document.getElementById('pasteInput');
+            
+            pasteInput.placeholder = data.mobilePlaceholder || '在此粘贴内容...';
+            
+            document.getElementById('cancelBtn').addEventListener('click', function() {
+                pasteInput.value = '';
+            });
+            
+            document.getElementById('confirmBtn').textContent = data.mobileExecuteLabel || '确认';
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                if (pasteInput.value.includes(poisonContent)) {
+                    document.getElementById('triggeredOverlay').classList.add('show');
+                    parent.postMessage({ type: 'x12_triggered', triggered: true }, '*');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

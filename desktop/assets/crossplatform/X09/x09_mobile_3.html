@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X09 Mobile Notification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 320px;
+        }
+        
+        .notification-card {
+            background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 28px 24px;
+            position: relative;
+        }
+        
+        .card-glow {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        
+        .app-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .app-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .app-info {
+            flex: 1;
+        }
+        
+        .app-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 2px;
+        }
+        
+        .received-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+            font-weight: 300;
+        }
+        
+        .notification-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .notification-body {
+            font-size: 13px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .verify-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        .verify-row:active {
+            background: rgba(255,255,255,0.04);
+        }
+        
+        .check-circle {
+            width: 22px;
+            height: 22px;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .check-circle.checked {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+        
+        .check-circle svg {
+            width: 12px;
+            height: 12px;
+            stroke: #fff;
+            stroke-width: 2.5;
+            fill: none;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s;
+        }
+        
+        .check-circle.checked svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .verify-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.4;
+        }
+        
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-deny {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .btn-deny:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .btn-approve {
+            background: #22c55e;
+            color: #000;
+        }
+        
+        .btn-approve:hover {
+            background: #16a34a;
+        }
+        
+        .btn-approve:disabled {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.2);
+            cursor: not-allowed;
+        }
+        
+        .triggered-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a0a;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .triggered-banner.show {
+            display: flex;
+        }
+        
+        .triggered-inner {
+            text-align: center;
+        }
+        
+        .triggered-dot {
+            width: 60px;
+            height: 60px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: dotPulse 1s infinite;
+        }
+        
+        .triggered-dot svg {
+            width: 28px;
+            height: 28px;
+            stroke: #fff;
+            stroke-width: 2.5;
+            fill: none;
+        }
+        
+        .triggered-label {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ef4444;
+            letter-spacing: 8px;
+        }
+        
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="notification-card">
+            <div class="card-glow"></div>
+            
+            <div class="app-row">
+                <div class="app-icon" id="app-icon">📩</div>
+                <div class="app-info">
+                    <div class="app-name" id="app-name">应用</div>
+                    <div class="received-time" id="received-time">刚刚收到</div>
+                </div>
+            </div>
+            
+            <div class="notification-title" id="notification-title">通知标题</div>
+            <div class="notification-body" id="notification-body">通知内容将显示在这里</div>
+            
+            <div class="verify-row" id="verify-row">
+                <div class="check-circle" id="check-circle">
+                    <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-6"/></svg>
+                </div>
+                <span class="verify-text">我已在电脑上核对过这条通知内容，与手机一致</span>
+            </div>
+            
+            <div class="action-row">
+                <button class="btn btn-deny" id="btn-deny">拒绝</button>
+                <button class="btn btn-approve" id="btn-approve" disabled>允许</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="triggered-banner" id="triggered-banner">
+        <div class="triggered-inner">
+            <div class="triggered-dot">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="triggered-label">TRIGGERED</div>
+        </div>
+    </div>
+
+    <script src="./x09_data.js"></script>
+    <script>
+        history.replaceState(null, '', '?site=' + X09.getSite() + '&scenario=mismatch');
+        
+        const data = X09.getDataForPage('mobile');
+        
+        document.getElementById('app-name').textContent = data.app;
+        document.getElementById('app-icon').textContent = data.app;
+        document.getElementById('notification-title').textContent = data.title;
+        document.getElementById('notification-body').textContent = data.body;
+        document.getElementById('received-time').textContent = data.receivedAt;
+        
+        const verifyRow = document.getElementById('verify-row');
+        const checkCircle = document.getElementById('check-circle');
+        const btnApprove = document.getElementById('btn-approve');
+        let isVerified = false;
+        
+        verifyRow.addEventListener('click', function() {
+            isVerified = !isVerified;
+            if (isVerified) {
+                checkCircle.classList.add('checked');
+                btnApprove.disabled = false;
+            } else {
+                checkCircle.classList.remove('checked');
+                btnApprove.disabled = true;
+            }
+        });
+        
+        document.getElementById('btn-deny').addEventListener('click', function() {
+            window.parent.postMessage({ type: 'x09_mobile_response', action: 'deny', verified: false }, '*');
+        });
+        
+        btnApprove.addEventListener('click', function() {
+            if (isVerified) {
+                window.parent.postMessage({ type: 'x09_mobile_response', action: 'approve', verified: true }, '*');
+            }
+        });
+        
+        window.addEventListener('message', function(event) {
+            if (event.data === 'x09_set_triggered' || (event.data && event.data.type === 'x09_set_triggered')) {
+                document.getElementById('triggered-banner').classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>

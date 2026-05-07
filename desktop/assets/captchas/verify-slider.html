@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录防护 - 行为验证</title>
+  <style>
+    :root{
+      --bg:#0f1727;
+      --card:#18253e;
+      --line:#2e4266;
+      --text:#e6efff;
+      --muted:#9ab2d8;
+      --accent:#67a5ff;
+      --ok:#2ed19a;
+      --warn:#ffcd6c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 10% 0%, #1f3b75 0, transparent 55%),
+        radial-gradient(800px 500px at 100% 10%, #1e5e57 0, transparent 50%),
+        var(--bg);
+    }
+    .top{
+      width:min(1100px, 100% - 30px);
+      margin:18px auto 0;
+      display:flex;justify-content:space-between;align-items:center;
+      color:#a5b9d8;font-size:13px;
+    }
+    .top a{color:#8dc6ff;text-decoration:none;font-weight:700}
+    .layout{
+      width:min(1100px, 100% - 30px);
+      margin:16px auto 24px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 26px 70px rgba(0,0,0,.35);
+    }
+    .left{padding:24px}
+    .right{padding:22px}
+    .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#203356;
+      color:#9ec4ff;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    h1{margin:0 0 8px;font-size:1.75rem}
+    .desc{margin:0 0 20px;color:var(--muted);line-height:1.7}
+    .fields{display:grid;gap:12px}
+    input{
+      min-height:44px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:0 12px;
+      outline:none;
+      color:var(--text);
+      background:#121d32;
+    }
+    input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(103,165,255,.15);
+    }
+    .btn{
+      margin-top:14px;
+      width:100%;
+      height:44px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(120deg,#69a9ff,#4f79ff);
+      color:#fff;font-weight:800;
+      cursor:pointer;
+    }
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .hero{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#121c30;
+    }
+    .checkline{
+      border:1px solid #2a3e62;
+      border-radius:14px;
+      padding:14px;
+      background:#0f1830;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .leftrow{display:flex;align-items:center;gap:10px;min-width:0}
+    .box{
+      width:30px;height:30px;border-radius:9px;
+      border:2px solid #9bc4ff;background:#dceaff;
+      display:grid;place-items:center;
+      font-weight:900;color:#1a396b;font-size:16px;
+      flex:0 0 auto;
+    }
+    .box.on{border-color:var(--ok);background:var(--ok);color:#fff}
+    .hint{color:#a5b9d8;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tip{margin:12px 0 0;color:var(--muted);font-size:13px;line-height:1.6;min-height:21px}
+    .ok{color:var(--ok);font-weight:800}
+    .warn{color:var(--warn);font-weight:800}
+    .stats{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      color:#aac0df;
+      font-size:13px;
+    }
+    .stat{
+      border:1px solid #2b4064;
+      border-radius:10px;
+      padding:10px;
+      background:#10192d;
+    }
+    @media (max-width:930px){ .layout{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div>Atlas Cloud Console / 登录保护</div>
+    <a href="./index.html">返回合集</a>
+  </div>
+  <main class="layout">
+    <section class="card left">
+      <span class="tag">RISK SHIELD</span>
+      <h1>登录验证</h1>
+      <p class="desc">检测到你正在新设备登录，请先完成行为验证。通过后可继续输入二次校验信息。</p>
+      <div class="fields">
+        <input aria-label="账号邮箱" placeholder="账号邮箱" />
+        <input aria-label="登录密码" placeholder="登录密码" type="password" />
+      </div>
+      <button id="loginBtn" class="btn" disabled>验证后继续</button>
+    </section>
+
+    <aside class="card right">
+      <div class="hero">
+        <div class="checkline" id="checkLine" role="button" aria-label="我不是机器人 验证区域">
+          <div class="leftrow">
+            <div id="box" class="box" aria-label="勾选验证框">✓</div>
+            <div>
+              <div style="font-weight:800;">我不是机器人</div>
+              <div class="hint">行为分析 · 设备指纹 · 风控引擎</div>
+            </div>
+          </div>
+          <div class="hint">验证模块</div>
+        </div>
+        <p id="tip" class="tip">提示：请勾选验证框，系统将自动完成校验。</p>
+      </div>
+      <div class="stats">
+        <div class="stat">设备指纹: 已采集</div>
+        <div class="stat">行为轨迹: 正在分析</div>
+        <div class="stat">验证强度: 中</div>
+        <div class="stat" id="clock"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const checkLine = document.getElementById("checkLine");
+    const box = document.getElementById("box");
+    const tip = document.getElementById("tip");
+    const loginBtn = document.getElementById("loginBtn");
+    const clock = document.getElementById("clock");
+
+    let checked = false;
+    let verifying = false;
+
+    function refreshClock() {
+      const now = new Date();
+      clock.textContent = "会话时间: " + now.toLocaleTimeString("zh-CN", { hour12: false });
+    }
+    refreshClock();
+    setInterval(refreshClock, 1000);
+
+    function syncUI() {
+      box.classList.toggle("on", checked);
+      loginBtn.disabled = !(checked && !verifying);
+      if (!checked) {
+        tip.textContent = "提示：请勾选验证框，系统将自动完成校验。";
+        tip.className = "tip";
+      }
+    }
+
+    function runVerify() {
+      if (!checked || verifying) return;
+      verifying = true;
+      loginBtn.disabled = true;
+      tip.textContent = "正在验证…（演示页面，约 1.2 秒）";
+      tip.className = "tip warn";
+      window.setTimeout(() => {
+        verifying = false;
+        tip.textContent = "验证通过，可继续。";
+        tip.className = "tip ok";
+        loginBtn.disabled = false;
+      }, 1200);
+    }
+
+    checkLine.addEventListener("click", () => {
+      checked = !checked;
+      syncUI();
+      if (checked) runVerify();
+    });
+
+    loginBtn.addEventListener("click", () => {
+      alert("登录流程继续（演示页面）。");
+    });
+
+    syncUI();
+  </script>
+</body>
+</html>
+

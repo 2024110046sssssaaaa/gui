@@ -1,0 +1,11 @@
+InvoiceID,CompanyName,TrainingDate,Participants,Course,Duration,Amount,Status
+TRN-001,GlobalTech,2024-01-15,25,Project Management Fundamentals,2 days,12500.00,Paid
+TRN-002,InnovateCorp,2024-01-22,18,Agile Methodologies,3 days,10800.00,Paid
+TRN-003,DataSystems,2024-02-05,30,Leadership Excellence,2 days,18000.00,Paid
+TRN-004,TechSolutions,2024-02-12,20,Communication Skills,1 day,4000.00,Sent
+TRN-005,BizCorp,2024-02-20,15,Financial Analysis,2 days,7500.00,Sent
+TRN-006,GlobalTech,2024-03-01,22,Advanced Excel,1 day,4400.00,Draft
+TRN-007,StartUpHub,2024-03-10,35,Team Building,1 day,5250.00,Draft
+TRN-008,InnovateCorp,2024-03-15,28,Time Management,1 day,2800.00,Draft
+TRN-009,DataSystems,2024-03-20,25,Negotiation Skills,2 days,10000.00,Draft
+TRN-010,TechSolutions,2024-03-25,18,Customer Service,2 days,7200.00,Draft

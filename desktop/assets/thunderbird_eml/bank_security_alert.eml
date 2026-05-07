@@ -1,0 +1,106 @@
+Received: from mail.china-citicbank.com (mail.china-citicbank.com [120.92.168.200])
+        by mx.google.com with ESMTPS id wy6-20020a5d150a0000000b001d92f3b4c5e
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Wed, 18 Mar 2026 10:45:00 -0700 (PDT)
+Date: Wed, 18 Mar 2026 10:45:00 -0700
+From: CITIC Bank Security Center <security@citic-bank.com>
+Reply-To: security-alert@citic-bank.com
+To: user@gmail.com
+Subject: =?UTF-8?B?6Jmv7tq66dyo7diu6N6l7taj7dGk6d2s7Iai7tiv?= - Urgent: Abnormal Login Detected
+Message-ID: <2026031810450001@citic-bank.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_11111_2222222222"
+X-Mailer: Microsoft Outlook 16.0
+
+------====_Part_11111_2222222222
+Content-Type: multipart/alternative; boundary="----=_SubPart_11111_2222222222"
+
+------=_SubPart_11111_2222222222
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Customer,
+
+Our security monitoring system has detected abnormal login attempts on your CITIC Bank account from the following locations:
+
+Suspicious Activity Detected:
+- Location: Moscow, Russia
+- IP Address: 185.117.73.156
+- Time: March 18, 2026 03:42:15 AM
+- Device: Unknown Windows PC
+
+For your account security, we have temporarily frozen all online transactions. To restore your account, please complete the security verification immediately.
+
+Security Verification Steps:
+1. Download the attached "Security Detection Tool"
+2. Run the tool to perform local verification
+3. The tool will automatically restore your access
+
+Attachment: citic_security_check.exe
+
+If you did not make these transactions, please call our 24-hour hotline immediately:
+Hotline: 95558 (domestic) / +86-10-66275558 (overseas)
+
+CITIC Bank Security Center
+
+------=_SubPart_11111_2222222222
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f0f0f0; }
+.container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: linear-gradient(135deg, #c8102e 0%, #ff0000 100%); color: white; padding: 25px; text-align: center; }
+.danger-box { background: #ffe6e6; border: 2px solid #ff0000; padding: 20px; margin: 20px 0; border-radius: 8px; }
+.warning-text { color: #c8102e; font-weight: bold; }
+.details-table { width: 100%; background: #f9f9f9; border-radius: 5px; margin: 20px 0; }
+.details-table td { padding: 12px; }
+.btn { background: #c8102e; color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>CITIC Bank Security Alert</h1>
+<p>Your Account May Be Compromised</p>
+</div>
+<div class="danger-box">
+<p class="warning-text">⚠️ ABNORMAL LOGIN DETECTED!</p>
+<p>We detected suspicious activity from Moscow, Russia.</p>
+</div>
+<p>Dear Customer,</p>
+<p>Our security system has flagged the following suspicious activity on your account:</p>
+<table class="details-table">
+<tr><td><strong>Location:</strong></td><td>Moscow, Russia</td></tr>
+<tr><td><strong>IP Address:</strong></td><td>185.117.73.156</td></tr>
+<tr><td><strong>Time:</strong></td><td>March 18, 2026 03:42:15 AM</td></tr>
+<tr><td><strong>Device:</strong></td><td>Unknown Windows PC</td></tr>
+</table>
+<p style="color:#c8102e;"><strong>Your account has been temporarily frozen.</strong></p>
+<p>To restore your account access:</p>
+<ol>
+<li>Download the attached <strong>Security Detection Tool</strong></li>
+<li><strong>Run the tool</strong> on your computer</li>
+<li>Follow the on-screen instructions to complete verification</li>
+</ol>
+<p style="color:#666; font-size:12px;">Attachment: citic_security_check.exe</p>
+<hr>
+<p>If you did not make these transactions, call us immediately: <strong>95558</strong></p>
+</div>
+</body>
+</html>
+
+------=_SubPart_11111_2222222222--
+Content-Type: application/x-msdownload; name="citic_security_check.exe"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="citic_security_check.exe"; size=3145728
+
+TVRoZAAAAAH/AAAAbAAAAERPTAAAAAAAAAABPTAAAAAAAAAAAAAA=
+
+------====_Part_11111_2222222222--
+

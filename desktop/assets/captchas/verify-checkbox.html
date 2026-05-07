@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业注册安全验证</title>
+  <style>
+    :root{
+      --bg: #eff4fb;
+      --card: #ffffff;
+      --line: #d8e3f3;
+      --text: #173055;
+      --muted:#6e83a7;
+      --accent:#2f8cff;
+      --ok:#11a97d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      background:
+        radial-gradient(900px 500px at 15% -10%, #d9ebff 0%, transparent 55%),
+        radial-gradient(900px 560px at 100% 0%, #d7fff2 0%, transparent 48%),
+        var(--bg);
+      min-height:100vh;
+      color:var(--text);
+    }
+    .shell{
+      width:min(1120px, 100% - 32px);
+      margin:28px auto;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(28,57,101,.12);
+    }
+    .left{padding:26px 26px 22px}
+    .right{padding:24px}
+    .brand{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .brand .badge{
+      font-size:12px;
+      border-radius:999px;
+      background:#e8f2ff;
+      color:#276bc9;
+      padding:5px 10px;
+      font-weight:700;
+    }
+    h1{
+      margin:10px 0 8px;
+      font-size:clamp(1.4rem,2vw,1.9rem);
+    }
+    .sub{margin:0 0 20px;color:var(--muted)}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field.full{grid-column:1 / -1}
+    label{font-size:13px;color:#446186;font-weight:600}
+    input, select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      min-height:44px;
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+      background:#fcfdff;
+    }
+    input:focus, select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(47,140,255,.13);
+    }
+    .verify{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      background:linear-gradient(180deg,#fff,#f9fcff);
+    }
+    .verify-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .check{
+      width:28px;height:28px;border-radius:8px;border:2px solid #6989b5;
+      display:grid;place-items:center;cursor:pointer;transition:.2s;
+      background:#fff;
+      color:#fff;
+      font-size:16px;
+      font-weight:900;
+      user-select:none;
+    }
+    .check.done{
+      border-color:var(--ok);
+      background:var(--ok);
+      color:#fff;
+    }
+    .status{font-size:13px;color:#5a7396}
+    .logo{
+      text-align:right;
+      color:#6f86a8;
+      font-size:12px;
+      line-height:1.35;
+    }
+    .spinner{
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid #d7e8ff;border-top-color:#2779e4;
+      animation:spin .8s linear infinite;
+      display:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .actions{
+      margin-top:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+    }
+    .btn{
+      min-height:44px;border:none;border-radius:12px;padding:0 18px;
+      font-weight:700;color:#fff;background:linear-gradient(120deg,#3e8eff,#2f6fff);
+      cursor:pointer;box-shadow:0 10px 28px rgba(44,108,205,.3);
+    }
+    .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .small{
+      font-size:12px;color:var(--muted);
+    }
+    .risk-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      margin-bottom:14px;
+      background:#f9fbff;
+    }
+    .risk-card h2{
+      margin:0 0 8px;
+      font-size:16px;
+    }
+    .row{display:flex;justify-content:space-between;gap:12px;margin:8px 0;color:#4f678b}
+    .meter{
+      height:8px;border-radius:999px;background:#dce9fb;overflow:hidden;margin-top:8px
+    }
+    .meter span{
+      display:block;height:100%;width:76%;
+      background:linear-gradient(90deg,#18a86c,#53d092);
+    }
+    .tips{
+      margin:0;padding-left:18px;color:#50698d;line-height:1.6;font-size:13px
+    }
+    .top-nav{
+      width:min(1120px, 100% - 32px);
+      margin:18px auto 0;
+      display:flex;justify-content:space-between;align-items:center;
+      color:#5d7498;font-size:13px
+    }
+    .top-nav a{color:#376daf;text-decoration:none;font-weight:700}
+    @media (max-width:920px){
+      .shell{grid-template-columns:1fr;margin:16px auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="top-nav">
+    <div>NorthBridge 企业服务平台 / 安全注册</div>
+    <a href="./index.html">返回合集</a>
+  </div>
+  <main class="shell">
+    <section class="panel left">
+      <div class="brand">
+        <div class="badge">SECURE SIGNUP</div>
+        <div class="small">会话编号: NB-2026-0313-794</div>
+      </div>
+      <h1>创建企业管理账号</h1>
+      <p class="sub">请填写以下信息并完成人机验证，验证通过后可进入下一步资质认证。</p>
+      <form id="registerForm">
+        <div class="grid">
+          <div class="field">
+            <label for="name">联系人姓名</label>
+            <input id="name" required placeholder="例如：张晨熙">
+          </div>
+          <div class="field">
+            <label for="company">企业名称</label>
+            <input id="company" required placeholder="例如：上海云格科技有限公司">
+          </div>
+          <div class="field">
+            <label for="email">企业邮箱</label>
+            <input id="email" type="email" required placeholder="name@company.com">
+          </div>
+          <div class="field">
+            <label for="phone">手机号</label>
+            <input id="phone" required placeholder="11位手机号">
+          </div>
+          <div class="field full">
+            <label for="role">岗位类型</label>
+            <select id="role">
+              <option>运营负责人</option>
+              <option>技术负责人</option>
+              <option>合规专员</option>
+              <option>其他</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="verify">
+          <div class="verify-left">
+            <div id="captchaCheck" class="check" aria-label="勾选验证框">✓</div>
+            <div>
+              <div style="font-weight:700;">我不是机器人</div>
+              <div id="status" class="status">请勾选并等待验证完成</div>
+            </div>
+            <div id="spinner" class="spinner"></div>
+          </div>
+          <div class="logo">
+            安全验证模块<br>隐私 - 条款
+          </div>
+        </div>
+
+        <div class="actions">
+          <span class="small">提交即表示你同意《平台服务协议》及《数据处理规则》</span>
+          <button id="submitBtn" class="btn" disabled type="submit">提交注册申请</button>
+        </div>
+      </form>
+    </section>
+
+    <aside class="panel right">
+      <div class="risk-card">
+        <h2>实时风控状态</h2>
+        <div class="row"><span>设备可信度</span><strong>高</strong></div>
+        <div class="row"><span>行为一致性</span><strong>良好</strong></div>
+        <div class="row"><span>IP 风险等级</span><strong>低风险</strong></div>
+        <div class="meter"><span></span></div>
+      </div>
+      <div class="risk-card">
+        <h2>本次验证建议</h2>
+        <ul class="tips">
+          <li>请不要频繁刷新页面，避免触发额外检测。</li>
+          <li>建议使用稳定网络并保持页面停留 8 秒以上。</li>
+          <li>若多次失败，可切换手机热点后重试。</li>
+        </ul>
+      </div>
+      <div class="risk-card">
+        <h2>系统信息</h2>
+        <div class="row"><span>地区</span><strong>华东节点</strong></div>
+        <div class="row"><span>时间</span><strong id="clock"></strong></div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const check = document.getElementById("captchaCheck");
+    const spinner = document.getElementById("spinner");
+    const status = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+    const form = document.getElementById("registerForm");
+    const clock = document.getElementById("clock");
+    let done = false;
+    let loading = false;
+
+    function tickClock() {
+      const now = new Date();
+      clock.textContent = now.toLocaleString("zh-CN", { hour12: false });
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    check.addEventListener("click", () => {
+      if (loading || done) return;
+      loading = true;
+      spinner.style.display = "inline-block";
+      status.textContent = "系统正在校验行为特征...";
+      setTimeout(() => {
+        loading = false;
+        done = true;
+        spinner.style.display = "none";
+        check.classList.add("done");
+        status.textContent = "验证通过，可继续提交";
+        submitBtn.disabled = false;
+      }, 1200 + Math.random() * 900);
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!done) return;
+      submitBtn.textContent = "已提交";
+      submitBtn.disabled = true;
+      alert("注册申请已提交，验证状态：通过。");
+    });
+  </script>
+</body>
+</html>

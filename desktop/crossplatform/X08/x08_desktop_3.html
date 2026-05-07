@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞书 Lark - 身份验证</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #e6e6e6;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            width: 300px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #ee4e8b, #a855f7);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        .card-header h1 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .card-header p { font-size: 12px; opacity: 0.85; }
+        .card-body { padding: 16px; }
+        .status-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+        .status-desc { font-size: 12px; color: #888; margin-bottom: 16px; }
+        .meta-list { border: 1px solid #e8e8e8; border-radius: 6px; overflow: hidden; }
+        .meta-row {
+            display: flex; padding: 8px 12px; font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .meta-row:last-child { border-bottom: none; }
+        .ml { color: #999; width: 70px; }
+        .mv { flex: 1; color: #333; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1 id="ui-app-name">飞书 Lark</h1>
+            <p id="ui-sub-title">桌面端登录验证</p>
+        </div>
+        <div class="card-body">
+            <div class="status-title" id="ui-status-title">身份验证中</div>
+            <div class="status-desc" id="ui-status">请在飞书 App 中完成身份确认</div>
+            <div class="meta-list">
+                <div class="meta-row"><span class="ml">设备</span><span class="mv" id="val-device">Loading...</span></div>
+                <div class="meta-row"><span class="ml">系统</span><span class="mv" id="val-platform">Loading...</span></div>
+                <div class="meta-row"><span class="ml">账户</span><span class="mv" id="val-account">Loading...</span></div>
+                <div class="meta-row"><span class="ml">请求ID</span><span class="mv" id="val-request">Loading...</span></div>
+                <div class="meta-row"><span class="ml">验证方式</span><span class="mv" id="val-method">Loading...</span></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            url.searchParams.set('site', '3');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+    </script>
+    <script src="./x08_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = window.X08.getDataForPage("desktop");
+            var site = window.X08.getSite();
+            document.title = site.name + ' - 身份验证';
+            document.getElementById('ui-app-name').textContent = site.name;
+            document.getElementById('ui-status-title').textContent = data.statusTitle || '身份验证中';
+            document.getElementById('ui-status').textContent = data.statusDesc || data.status || '';
+            document.getElementById('val-device').textContent = data.device || '';
+            document.getElementById('val-platform').textContent = data.platform || '';
+            document.getElementById('val-account').textContent = data.account || '';
+            document.getElementById('val-request').textContent = data.requestId || '';
+            document.getElementById('val-method').textContent = data.loginMethod || '';
+        });
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

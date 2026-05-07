@@ -1,0 +1,6 @@
+编号,姓名,部门,桌号,签到二维码链接
+EP001,林志玲,市场部,01,https://event.example.com/checkin/ABC123
+EP002,周杰伦,销售部,02,https://event.example.com/checkin/DEF456
+EP003,蔡依林,技术部,03,https://event.example.com/checkin/GHI789
+EP004,周星驰,运营部,04,https://event.example.com/checkin/JKL012
+EP005,巩俐,财务部,05,https://event.example.com/checkin/MNO345

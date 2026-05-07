@@ -1,0 +1,6 @@
+InvoiceID,Client,Date,Amount,Status
+INV-001,Tech Corp,2024-06-15,1500.00,Paid
+INV-002,Innovate LLC,2024-06-20,2750.50,Sent
+INV-003,Data Systems,2024-06-22,950.00,Paid
+INV-004,Creative Inc,2024-06-25,3200.00,Draft
+INV-005,Tech Corp,2024-07-01,1800.00,Sent

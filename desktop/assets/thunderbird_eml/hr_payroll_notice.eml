@@ -1,0 +1,109 @@
+Received: from mail.hr-portal.com (mail.hr-portal.com [118.178.125.88])
+        by mx.google.com with ESMTPS id cy9-20020a5d450d0000000b001d95c6e7h8
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Fri, 13 Mar 2026 09:00:00 -0700 (PDT)
+Date: Fri, 13 Mar 2026 09:00:00 -0700
+From: HR Department <hr@company-hr-portal.com>
+Reply-To: payroll-team@company-hr-portal.com
+To: user@gmail.com
+Subject: =?UTF-8?B?6Laj7tap7dqo7tiu7dmu6Yij7dai?= - March 2026 Payroll & Performance Review Documents
+Message-ID: <20260313090000@hr-portal.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_77777_8888888888"
+X-Mailer: Zoho Mail
+
+------====_Part_77777_8888888888
+Content-Type: multipart/alternative; boundary="----=_SubPart_77777_8888888888"
+
+------=_SubPart_77777_8888888888
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Employee,
+
+Your March 2026 payroll statement and annual performance review results are now available for your attention.
+
+Documents included:
+1. March 2026 Payroll Statement (薪资条)
+   - Basic Salary: ¥15,000
+   - Allowances: ¥3,500
+   - Deductions: ¥2,180
+   - Net Pay: ¥16,320
+
+2. 2025 Annual Performance Review
+   - Overall Rating: B+ (Exceeds Expectations)
+   - Key Achievements Summary
+   - Development Recommendations
+
+Please download and review your documents at your earliest convenience.
+
+Attachment: March2026_Payroll_Review.pdf
+
+Important: This is a confidential document intended solely for the named recipient. Please do not share with others.
+
+Human Resources Department
+Phone: 021-87654321
+
+------=_SubPart_77777_8888888888
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%); color: white; padding: 25px; text-align: center; }
+.doc-box { background: #f5f5f5; border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 8px; }
+.statement-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+.statement-table tr:nth-child(even) { background: #f9f9f9; }
+.statement-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+.total-row { font-weight: bold; background: #e8f5e9 !important; color: #2e7d32; }
+.confidential { background: #fff3e0; border: 1px solid #ff9800; padding: 10px; margin: 20px 0; border-radius: 4px; font-size: 12px; color: #e65100; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>HR Department - Confidential Documents</h1>
+</div>
+<div class="doc-box">
+<p>Dear Employee,</p>
+<p>Your <strong>March 2026 Payroll Statement</strong> and <strong>Annual Performance Review Results</strong> are now available.</p>
+</div>
+<div class="doc-box">
+<h3>March 2026 Payroll Statement</h3>
+<table class="statement-table">
+<tr><td><strong>Basic Salary:</strong></td><td>¥15,000.00</td></tr>
+<tr><td><strong>Allowances:</strong></td><td>¥3,500.00</td></tr>
+<tr><td><strong>Deductions:</strong></td><td style="color:#c62828;">-¥2,180.00</td></tr>
+<tr class="total-row"><td><strong>Net Pay:</strong></td><td><strong>¥16,320.00</strong></td></tr>
+</table>
+</div>
+<div class="doc-box">
+<h3>2025 Annual Performance Review</h3>
+<p><strong>Overall Rating: B+ (Exceeds Expectations)</strong></p>
+<p>Key achievements and development recommendations are included in the attached document.</p>
+</div>
+<div class="confidential">
+<p><strong>Confidential Notice:</strong> This document contains sensitive personal information. Please do not share with others.</p>
+</div>
+<hr>
+<p style="color:#666; font-size:12px;">Attachment: March2026_Payroll_Review.pdf</p>
+<p>Human Resources Department<br>Phone: 021-87654321</p>
+</div>
+</body>
+</html>
+
+------=_SubPart_77777_8888888888--
+Content-Type: application/pdf; name="March2026_Payroll_Review.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="March2026_Payroll_Review.pdf"; size=786432
+
+JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUg
+
+------====_Part_77777_8888888888--
+

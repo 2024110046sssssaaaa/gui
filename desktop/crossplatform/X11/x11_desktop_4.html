@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 600px; margin: 0 auto;">
+    <title>X11 Desktop - YouTube Cast Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', Arial, sans-serif; background: #0f0f0f; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .yt-cast-banner { width: 100%; max-width: 580px; background: #282828; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .yt-cast-header { padding: 18px 22px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #3a3a3a; }
+        .yt-cast-logo { width: 48px; height: 48px; background: #ff0000; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .yt-cast-logo svg { width: 28px; height: 28px; fill: white; }
+        .yt-cast-info { flex: 1; }
+        .yt-cast-title { font-size: 16px; font-weight: 500; color: white; margin-bottom: 2px; }
+        .yt-cast-status { font-size: 12px; color: #aaa; }
+        .yt-cast-badge { background: #272727; padding: 6px 12px; border-radius: 16px; display: flex; align-items: center; gap: 6px; }
+        .cast-dot { width: 10px; height: 10px; background: #4caf50; border-radius: 50%; animation: glow 2s infinite; }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 4px #4caf50; } 50% { box-shadow: 0 0 12px #4caf50; } }
+        .yt-cast-body { padding: 20px 22px; }
+        .yt-cast-preview { background: #1a1a1a; border-radius: 10px; padding: 20px; min-height: 100px; }
+        .preview-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .preview-thumb { width: 64px; height: 40px; background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .preview-title-text { font-size: 14px; color: white; font-weight: 500; }
+        .preview-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+        .preview-content { font-size: 13px; color: #ccc; line-height: 1.5; padding-top: 12px; border-top: 1px solid #333; }
+        .yt-cast-footer { padding: 14px 22px; background: #1f1f1f; display: flex; justify-content: space-between; align-items: center; }
+        .footer-text { font-size: 11px; color: #666; }
+        .footer-link { font-size: 11px; color: #3ea6ff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="yt-cast-banner">
+        <div class="yt-cast-header">
+            <div class="yt-cast-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+            </div>
+            <div class="yt-cast-info">
+                <div class="yt-cast-title" id="title">Casting to TV</div>
+                <div class="yt-cast-status" id="deviceName">YouTube • Ready</div>
+            </div>
+            <div class="yt-cast-badge">
+                <div class="cast-dot"></div>
+                <span style="font-size: 12px; color: white;">Casting</span>
+            </div>
+        </div>
+        
+        <div class="yt-cast-body">
+            <div class="yt-cast-preview">
+                <div class="preview-header">
+                    <div class="preview-thumb">▶</div>
+                    <div>
+                        <div class="preview-title-text" id="contentTitle">Waiting for content...</div>
+                        <div class="preview-subtitle" id="status">Ready to play</div>
+                    </div>
+                </div>
+                <div class="preview-content" id="content">
+                    Connect your mobile device to cast videos, music, and more to this display.
+                </div>
+            </div>
+        </div>
+        
+        <div class="yt-cast-footer">
+            <span class="footer-text">Powered by YouTube Cast Receiver</span>
+            <a href="#" class="footer-link">Learn more</a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=4');
+                site = '4';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('title').textContent = data.desktopTitle || 'Casting to TV';
+            document.getElementById('deviceName').textContent = 'YouTube • ' + siteName;
+            document.getElementById('contentTitle').textContent = data.desktopTitle || 'Waiting for content...';
+            document.getElementById('status').textContent = data.desktopStatus || 'Ready to play';
+            document.getElementById('content').textContent = data.injectedContent || 'Connect your mobile device to cast videos, music, and more to this display.';
+        })();
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

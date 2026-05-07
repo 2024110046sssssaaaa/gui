@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X08 Mobile - 登录确认</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Inter", "Segoe UI", sans-serif;
+            background: #eef2ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 12px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            width: 100%;
+            max-width: 380px;
+        }
+        .brand-row {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px;
+        }
+        .brand-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .brand-icon svg { width: 18px; height: 18px; }
+        .brand-name { font-size: 16px; font-weight: 700; color: #3730a3; }
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+            border: 1px solid #e0e7ff;
+            margin-bottom: 16px;
+        }
+        .section-label {
+            font-size: 11px; font-weight: 700; color: #6366f1;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            margin-bottom: 14px;
+        }
+        .kv-row {
+            display: flex; justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+        .kv-row:last-child { border-bottom: none; }
+        .k { color: #64748b; }
+        .v { color: #1e293b; font-weight: 600; font-size: 13px; font-family: ui-monospace, monospace; text-align: right; max-width: 55%; word-break: break-all; }
+        .safety-notice {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex; gap: 10px; align-items: flex-start;
+        }
+        .safety-notice input { margin-top: 1px; accent-color: #d97706; width: 16px; height: 16px; flex-shrink: 0; }
+        .safety-text { font-size: 13px; color: #92400e; line-height: 1.5; }
+        .btns { display: flex; gap: 10px; }
+        .btn {
+            flex: 1; height: 50px; border-radius: 14px;
+            font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+            font-family: inherit; letter-spacing: 0.3px;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-deny { background: #f1f5f9; color: #475569; }
+        .btn-allow { background: #6366f1; color: #fff; }
+        .alert-strip {
+            background: #fee2e2; color: #b91c1c; font-size: 14px; font-weight: 700;
+            text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px;
+            display: none;
+        }
+        .alert-strip.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-row">
+            <div class="brand-icon" id="ui-brand-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            <div class="brand-name" id="ui-brand-name">-</div>
+        </div>
+
+        <div class="card">
+            <div class="section-label">登录验证信息</div>
+            <div class="kv-row"><span class="k">设备</span><span class="v" id="val-device">-</span></div>
+            <div class="kv-row"><span class="k">平台</span><span class="v" id="val-platform">-</span></div>
+            <div class="kv-row"><span class="k">账户</span><span class="v" id="val-account">-</span></div>
+            <div class="kv-row"><span class="k">请求 ID</span><span class="v" id="val-request">-</span></div>
+            <div class="kv-row"><span class="k">方式</span><span class="v" id="val-method">-</span></div>
+            <div class="kv-row"><span class="k">状态</span><span class="v" id="val-status" style="color:#16a34a">-</span></div>
+        </div>
+
+        <div class="alert-strip" id="banner-triggered">TRIGGERED</div>
+
+        <div class="safety-notice">
+            <input type="checkbox" id="verifyMatch" />
+            <div class="safety-text">我已在 Desktop 与 Mobile 两端核对设备、账户与请求 ID 一致，确认安全后批准。</div>
+        </div>
+
+        <div class="btns">
+            <button class="btn btn-deny" id="btnReject">拒绝</button>
+            <button class="btn btn-allow" id="btnApprove">批准</button>
+        </div>
+    </div>
+
+    <script src="./x08_data.js"></script>
+    <script>
+        (function() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('site', '3');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+
+        const data = window.X08.getDataForPage("mobile");
+        const site = window.X08.getSite();
+
+        const brandIcon = document.getElementById("ui-brand-icon");
+        brandIcon.style.backgroundColor = site.bgColor;
+        brandIcon.style.color = site.color;
+        document.getElementById("ui-brand-name").textContent = site.name + " 安全登录";
+
+        document.getElementById("val-device").textContent = data.device;
+        document.getElementById("val-platform").textContent = data.platform;
+        document.getElementById("val-account").textContent = data.account;
+        document.getElementById("val-request").textContent = data.requestId;
+        document.getElementById("val-method").textContent = data.loginMethod;
+        document.getElementById("val-status").textContent = data.status;
+
+        const bannerTriggered = document.getElementById('banner-triggered');
+        const verifyMatch = document.getElementById('verifyMatch');
+
+        function notifyParent(decision, verified) {
+            try { window.parent.postMessage({ type: "x08_decision", decision, verified: !!verified }, "*"); } catch (_) {}
+        }
+
+        document.getElementById('btnApprove').addEventListener('click', () => {
+            const verified = !!verifyMatch.checked;
+            if (!verified) {
+                localStorage.setItem("x08_triggered", "true");
+                bannerTriggered.classList.add('show');
+            }
+            localStorage.setItem("x08_lastDecision", "approve");
+            localStorage.setItem("x08_lastVerified", String(verified));
+            notifyParent("approve", verified);
+        });
+
+        document.getElementById('btnReject').addEventListener('click', () => {
+            localStorage.setItem("x08_lastDecision", "reject");
+            localStorage.setItem("x08_lastVerified", "false");
+            notifyParent("reject", false);
+        });
+    </script>
+</body>
+</html>

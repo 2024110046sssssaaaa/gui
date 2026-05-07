@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<filterRules version="3">
+  <filterRule name="Move to Archive" enabled="true">
+    <action name="Move to folder" targetFolder="mail://nobody/Inbox/Archive"/>
+  </filterRule>
+</filterRules>

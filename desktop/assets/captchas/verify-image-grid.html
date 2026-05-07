@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>支付安全验证 - 行为确认</title>
+  <style>
+    :root{
+      --bg:#f4f2ed;
+      --ink:#1f252f;
+      --muted:#5a6677;
+      --line:#d5dce8;
+      --card:#ffffff;
+      --accent:#0f6bff;
+      --good:#19a76f;
+      --bad:#d64c4c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Source Han Sans CN","PingFang SC","Microsoft YaHei",sans-serif;
+      color:var(--ink);
+      background:linear-gradient(120deg,#e8edf5 0,#f8f6f2 52%,#eaf3ed 100%);
+    }
+    .nav{
+      width:min(1200px, 100% - 32px);
+      margin:14px auto 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:#627285;
+      font-size:13px;
+    }
+    .nav a{color:#2e5d9b;text-decoration:none;font-weight:700}
+    .page{
+      width:min(1200px, 100% - 32px);
+      margin:20px auto;
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 18px 45px rgba(0,0,0,.08);
+    }
+    .checkout{padding:24px}
+    .checkout h1{margin:6px 0 8px;font-size:1.7rem}
+    .sub{margin:0 0 18px;color:var(--muted)}
+    .bar{display:flex;gap:8px;margin-bottom:20px}
+    .step{flex:1;height:8px;border-radius:999px;background:#dbe4f2}
+    .step.done{background:linear-gradient(90deg,#3f8cff,#4cc8a3)}
+    .block{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:14px;
+      background:#fcfdff;
+    }
+    .rows{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      color:#38485e;
+      font-size:14px;
+    }
+    .rows div{display:flex;justify-content:space-between;gap:12px}
+    .pay-btn{
+      width:100%;
+      height:46px;
+      border:none;
+      border-radius:12px;
+      font-size:15px;
+      font-weight:800;
+      color:#fff;
+      background:linear-gradient(120deg,#1e7cff,#2860f2);
+      cursor:pointer;
+      margin-top:10px;
+    }
+    .pay-btn[disabled]{opacity:.55;cursor:not-allowed}
+
+    .captcha{padding:20px;display:flex;flex-direction:column}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+    .top h2{margin:0;font-size:1.05rem}
+    .task{
+      font-size:14px;
+      color:#445a77;
+      background:#f5f9ff;
+      border:1px solid #d5e6ff;
+      border-radius:12px;
+      padding:10px 12px;
+      margin-bottom:12px;
+      line-height:1.55;
+    }
+    .checkline{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fbfcff;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .box{
+      width:30px;height:30px;border-radius:9px;
+      border:2px solid #6b86b3;background:#fff;
+      display:grid;place-items:center;
+      font-weight:900;color:#fff;font-size:16px;
+      flex:0 0 auto;
+    }
+    .box.on{border-color:var(--good);background:var(--good)}
+    .hint{color:#6b7f9f;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .actions{display:flex;gap:8px;margin-top:12px}
+    .actions button{
+      flex:1;
+      height:42px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      font-weight:800;
+      background:#fff;
+      color:#2a3f5c;
+    }
+    .verify{
+      background:linear-gradient(120deg,#ffca6a,#f89f2c);
+      color:#4e3200;
+      border:none !important;
+    }
+    .verify[disabled]{opacity:.55;cursor:not-allowed}
+    .msg{min-height:22px;margin-top:10px;font-size:13px;font-weight:800}
+    .ok{color:var(--good)}
+    .bad{color:var(--bad)}
+    .small{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+    @media (max-width:980px){ .page{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div>NovaMall / 订单确认</div>
+    <a href="./index.html">返回合集</a>
+  </div>
+
+  <main class="page">
+    <section class="panel checkout">
+      <div class="bar">
+        <div class="step done"></div>
+        <div class="step done"></div>
+        <div class="step"></div>
+      </div>
+      <h1>确认支付信息</h1>
+      <p class="sub">为保障交易安全，请先完成人机验证，再继续支付。</p>
+
+      <div class="block">
+        <div class="rows">
+          <div><span>订单号</span><strong>NO. 79348215</strong></div>
+          <div><span>商户</span><strong>NOVA 数码旗舰店</strong></div>
+          <div><span>商品</span><strong>无线降噪耳机 Pro</strong></div>
+          <div><span>数量</span><strong>1</strong></div>
+          <div><span>配送</span><strong>次日达</strong></div>
+          <div><span>应付金额</span><strong style="color:#c24f00;">¥ 1,299.00</strong></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="rows">
+          <div><span>收货人</span><strong>张先生</strong></div>
+          <div><span>手机号</span><strong>138****6731</strong></div>
+          <div><span>地址</span><strong>上海市浦东新区</strong></div>
+          <div><span>支付方式</span><strong>银行卡快捷支付</strong></div>
+        </div>
+      </div>
+      <button id="payBtn" class="pay-btn" disabled>等待验证完成</button>
+    </section>
+
+    <aside class="panel captcha">
+      <div class="top">
+        <h2>安全挑战</h2>
+      </div>
+      <div class="task">
+        为防止异常脚本支付，请完成一次简单行为确认：勾选「我不是机器人」后点击“验证”。
+      </div>
+
+      <div id="checkLine" class="checkline" role="button" aria-label="我不是机器人 验证区域">
+        <div class="left">
+          <div id="box" class="box" aria-label="勾选验证框">✓</div>
+          <div>
+            <div style="font-weight:800;">我不是机器人</div>
+            <div class="hint">基于行为分析与设备环境检测</div>
+          </div>
+        </div>
+        <div class="hint">验证模块</div>
+      </div>
+
+      <div class="actions">
+        <button id="clearBtn" type="button">取消勾选</button>
+        <button id="checkBtn" class="verify" type="button" disabled>验证</button>
+      </div>
+      <div id="msg" class="msg"></div>
+      <div class="small">提示：本页面为本地演示，已简化为“点击确认”式验证（无选图/无滑块）。</div>
+    </aside>
+  </main>
+
+  <script>
+    const box = document.getElementById("box");
+    const checkLine = document.getElementById("checkLine");
+    const clearBtn = document.getElementById("clearBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const msg = document.getElementById("msg");
+    const payBtn = document.getElementById("payBtn");
+    let checked = false;
+
+    function setChecked(v) {
+      checked = v;
+      box.classList.toggle("on", checked);
+      checkBtn.disabled = !checked;
+      if (!checked) {
+        msg.textContent = "";
+        msg.className = "msg";
+        payBtn.disabled = true;
+        payBtn.textContent = "等待验证完成";
+      }
+    }
+
+    checkLine.addEventListener("click", () => setChecked(!checked));
+    clearBtn.addEventListener("click", () => setChecked(false));
+
+    checkBtn.addEventListener("click", () => {
+      if (!checked) return;
+      msg.textContent = "验证通过，可继续支付。";
+      msg.className = "msg ok";
+      payBtn.disabled = false;
+      payBtn.textContent = "继续支付";
+    });
+  </script>
+</body>
+</html>
+

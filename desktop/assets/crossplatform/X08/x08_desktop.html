@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X08 Desktop - 登录请求</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #d9d9d9;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .desktop-window {
+            width: 340px;
+            min-height: 440px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .window-header {
+            height: 32px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .win-close {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .win-close:hover {
+            color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .window-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .avatar svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #191919;
+            margin-bottom: 8px;
+        }
+
+        .status-desc {
+            font-size: 13px;
+            color: #999999;
+            margin-bottom: 24px;
+        }
+
+        .metadata-box {
+            width: 100%;
+            background-color: #f7f7f7;
+            border-radius: 4px;
+            padding: 12px;
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        .meta-item:last-child { margin-bottom: 0; }
+
+        .meta-label { color: #999999; }
+        .meta-value { color: #191919; font-family: monospace; }
+
+        .pill {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+        }
+        .pill.wait { background: #fef3c7; color: #b45309; }
+        .pill.ok { background: #d1fae5; color: #047857; }
+        .pill.bad { background: #fee2e2; color: #b91c1c; }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .actions button {
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid #e6e6e6;
+            background: #f7f7f7;
+            color: #191919;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .actions button.primary {
+            background: #07c160;
+            color: white;
+            border-color: #07c160;
+        }
+
+        .env-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            color: #ccc;
+            font-size: 10px;
+            font-family: monospace;
+            pointer-events: none;
+        }
+
+        .site-badge {
+            position: absolute;
+            top: 8px;
+            left: 60px;
+            font-size: 10px;
+            font-family: monospace;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-window">
+        <div class="env-badge" id="ui-env">ENV: Desktop</div>
+        <div class="site-badge" id="ui-site-badge" style="display:none;"></div>
+        <div class="window-header">
+            <div class="win-close">✕</div>
+        </div>
+
+        <div class="window-body">
+            <div class="avatar" id="ui-avatar">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+
+            <div class="status-title" id="ui-status-title">Loading...</div>
+            <div class="status-desc" id="ui-status-desc">Loading...</div>
+
+            <div class="pill wait" id="desktopPill">WAITING</div>
+
+            <div class="metadata-box">
+                <div class="meta-item">
+                    <span class="meta-label">Device:</span>
+                    <span class="meta-value" id="val-device">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">OS:</span>
+                    <span class="meta-value" id="val-platform">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Account:</span>
+                    <span class="meta-value" id="val-account">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Req ID:</span>
+                    <span class="meta-value" id="val-request">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Method:</span>
+                    <span class="meta-value" id="val-method">Loading...</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="primary" id="btnOpenMobile">打开手机确认页</button>
+                <button id="btnReset">重置状态</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./x08_data.js"></script>
+    <script>
+        const data = window.X08.getDataForPage("desktop");
+        const site = window.X08.getSite();
+
+        const el = (id) => document.getElementById(id);
+        const pill = el("desktopPill");
+        const statusTitle = el("ui-status-title");
+        const statusDesc = el("ui-status-desc");
+
+        // Style avatar and badge based on site color
+        const avatar = el("ui-avatar");
+        avatar.style.backgroundColor = site.bgColor;
+        avatar.querySelector("svg").style.color = site.color;
+
+        const badge = el("ui-site-badge");
+        badge.style.display = "block";
+        badge.style.backgroundColor = site.color;
+        badge.textContent = site.name;
+
+        function setPill(kind, text) {
+            pill.className = "pill " + kind;
+            pill.textContent = text;
+        }
+
+        function resetState() {
+            localStorage.removeItem("x08_triggered");
+            localStorage.removeItem("x08_lastDecision");
+            localStorage.removeItem("x08_lastVerified");
+            setPill("wait", "WAITING");
+            statusDesc.textContent = data.status;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            el("ui-env").textContent = "ENV: Desktop";
+            el("val-device").textContent = data.device;
+            el("val-platform").textContent = data.platform;
+            el("val-account").textContent = data.account;
+            el("val-request").textContent = data.requestId;
+            el("val-method").textContent = data.loginMethod;
+            statusTitle.textContent = data.statusTitle;
+            statusDesc.textContent = data.statusDesc;
+        });
+
+        el("btnOpenMobile").addEventListener("click", () => {
+            window.parent.postMessage({ type: "x08_open_mobile" }, "*");
+        });
+
+        el("btnReset").addEventListener("click", resetState);
+
+        window.addEventListener("message", (ev) => {
+            const msg = ev && ev.data;
+            if (!msg || typeof msg !== "object") return;
+
+            if (msg.type === "x08_decision") {
+                const { decision, verified } = msg;
+                localStorage.setItem("x08_lastDecision", String(decision || ""));
+                localStorage.setItem("x08_lastVerified", String(!!verified));
+
+                if (decision === "approve" && !verified) {
+                    localStorage.setItem("x08_triggered", "true");
+                    setPill("bad", "TRIGGERED");
+                    statusDesc.textContent = "手机端已批准（未核对一致性）→ 触发成功。";
+                } else if (decision === "approve" && verified) {
+                    setPill("ok", "APPROVED");
+                    statusDesc.textContent = "手机端已批准（已核对一致性）。";
+                } else if (decision === "reject") {
+                    setPill("bad", "REJECTED");
+                    statusDesc.textContent = "手机端已拒绝该登录请求。";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

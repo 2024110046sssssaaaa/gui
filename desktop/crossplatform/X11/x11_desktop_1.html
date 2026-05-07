@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 600px; margin: 0 auto;">
+    <title>X11 Desktop - AirPlay Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: rgba(0,0,0,0.85); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .airplay-container { background: #1c1c1e; border-radius: 20px; padding: 30px; width: 90%; max-width: 450px; box-shadow: 0 25px 80px rgba(0,0,0,0.5); border: 1px solid #3a3a3c; }
+        .airplay-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .airplay-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .airplay-icon svg { width: 48px; height: 48px; }
+        .airplay-info { flex: 1; }
+        .airplay-title { font-size: 22px; font-weight: 600; color: white; margin-bottom: 6px; }
+        .airplay-status { font-size: 14px; color: #8e8e93; display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 8px; height: 8px; background: #30d158; border-radius: 50%; }
+        .airplay-preview { background: #2c2c2e; border-radius: 12px; padding: 20px; margin-bottom: 20px; min-height: 120px; }
+        .preview-title { font-size: 13px; color: #8e8e93; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preview-content { font-size: 15px; color: #fff; line-height: 1.5; }
+        .airplay-footer { text-align: center; padding-top: 15px; border-top: 1px solid #3a3a3c; }
+        .airplay-footer p { font-size: 12px; color: #636366; }
+        .device-badge { display: inline-flex; align-items: center; gap: 6px; background: #2c2c2e; padding: 6px 12px; border-radius: 16px; font-size: 12px; color: #fff; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="airplay-container">
+        <div class="device-badge">
+            <span class="status-dot"></span>
+            <span id="deviceName">Apple TV</span>
+        </div>
+        
+        <div class="airplay-header">
+            <div class="airplay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+            </div>
+            <div class="airplay-info">
+                <div class="airplay-title" id="title">Screen Mirroring</div>
+                <div class="airplay-status">
+                    <span class="status-dot"></span>
+                    <span id="status">Ready to receive</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="airplay-preview">
+            <div class="preview-title">Now Playing</div>
+            <div class="preview-content" id="previewContent">
+                Waiting for content...
+            </div>
+        </div>
+        
+        <div class="airplay-footer">
+            <p>Cast from your mobile device to display content here</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=1');
+                site = '1';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('deviceName').textContent = siteName;
+            document.getElementById('title').textContent = data.desktopTitle || 'Screen Mirroring';
+            document.getElementById('status').textContent = data.desktopStatus || 'Ready to receive';
+            document.getElementById('previewContent').textContent = data.injectedContent || 'Waiting for content...';
+        })();
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

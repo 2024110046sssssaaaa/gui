@@ -1,0 +1,44 @@
+Tuesday, May 05, 2026 PM01:09:40 HKT
+=== ps ===
+=== ss5000 ===
+=== tail log ===
+192.168.144.1 - - [05/May/2026 11:55:54] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:55:56] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:55:57] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:08] "GET /playwright_page HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:08] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:14] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:17] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:18] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:29] "GET /playwright_page HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:29] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:30] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:41] "GET /playwright_page HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:44] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:55] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:56:59] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:02] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:03] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:03] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:03] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:03] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:08] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:10] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:12] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:18] "POST /chrome_navigate HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:20] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:23] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:23] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:24] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:24] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:25] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:26] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:27] "GET /playwright_page HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:27] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:33] "POST /execute HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:36] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:37] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:37] "GET /playwright_page HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:38] "GET /screenshot HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:39] "GET /accessibility HTTP/1.1" 200 -
+192.168.144.1 - - [05/May/2026 11:57:40] "GET /playwright_page HTTP/1.1" 200 -

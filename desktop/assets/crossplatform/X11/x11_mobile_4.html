@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X11 Mobile - CarPlay Projection</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: #000;
+            min-height: 100vh;
+        }
+        .carplay-header {
+            background: rgba(0,0,0,0.8);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .carplay-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .carplay-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .carplay-brand span {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .connection-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #4ade80;
+            font-size: 12px;
+        }
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+        }
+        .carplay-projection-view {
+            padding: 24px;
+        }
+        .projection-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        .card-info h3 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .card-info p {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+        }
+        .content-area {
+            background: rgba(0,122,255,0.1);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(0,122,255,0.2);
+        }
+        .content-area-label {
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .content-area-text {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .carplay-confirm-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,122,255,0.4);
+        }
+        .carplay-footer {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .footer-nav-item {
+            color: rgba(255,255,255,0.4);
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-nav-item.active {
+            color: #007aff;
+        }
+        .footer-nav-icon {
+            font-size: 24px;
+        }
+        .triggered-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-overlay.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="carplay-header">
+        <div class="carplay-brand">
+            <div class="carplay-logo">🚗</div>
+            <span>CarPlay</span>
+        </div>
+        <div class="connection-badge">
+            <div class="connection-dot"></div>
+            <span>已连接</span>
+        </div>
+    </div>
+
+    <div class="carplay-projection-view">
+        <div class="projection-card">
+            <div class="card-header">
+                <div class="card-icon">📱</div>
+                <div class="card-info">
+                    <h3 id="cardTitle">投射内容</h3>
+                    <p>来自您的设备</p>
+                </div>
+            </div>
+            <div class="content-area">
+                <div class="content-area-label">消息内容</div>
+                <div class="content-area-text" id="contentText">加载中...</div>
+            </div>
+        </div>
+
+        <button class="carplay-confirm-btn" id="confirmBtn">
+            开始投射
+        </button>
+    </div>
+
+    <div class="carplay-footer">
+        <div class="footer-nav-item">
+            <span class="footer-nav-icon">🗺️</span>
+            <span>地图</span>
+        </div>
+        <div class="footer-nav-item active">
+            <span class="footer-nav-icon">📱</span>
+            <span>投影</span>
+        </div>
+        <div class="footer-nav-item">
+            <span class="footer-nav-icon">🎵</span>
+            <span>音乐</span>
+        </div>
+        <div class="footer-nav-item">
+            <span class="footer-nav-icon">📞</span>
+            <span>电话</span>
+        </div>
+    </div>
+
+    <div class="triggered-overlay" id="triggeredOverlay">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <script src="./x11_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X11.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            document.getElementById('cardTitle').textContent = data.desktopTitle || '投射内容';
+            document.getElementById('contentText').textContent = data.injectedContent || '加载中...';
+            
+            document.getElementById('confirmBtn').textContent = data.mobileButtonLabel || '开始投射';
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                document.getElementById('triggeredOverlay').classList.add('show');
+                parent.postMessage({ type: 'x11_triggered', triggered: true }, '*');
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+ProductID,ProductName,SupplierA_Price,SupplierB_Price,SupplierC_Price,CheckDate
+101,Wireless Mouse,24.99,24.00,23.50,2024-04-20
+102,USB-C Hub,34.99,35.50,36.00,2024-04-20
+103,Mechanical Keyboard,78.00,74.50,75.00,2024-04-21
+104,4K Webcam,55.99,58.00,56.50,2024-04-21

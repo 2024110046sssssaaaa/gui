@@ -1,0 +1,40 @@
+.env
+.env.*
+!.env.example
+*.log
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local auth/session state
+**/.auth/
+**/storage_state*.json
+**/*cookies*.json
+
+# Local runtime output
+desktop/logs/
+desktop/cache/
+desktop/.vmware_lck
+desktop/.vmware_vms
+web/visualwebarena/.auth/
+test_output/
+outputs/
+results/
+
+# Dependency/build artifacts
+venv/
+.venv/
+node_modules/
+desktop/wheels/
+*.whl
+dist/
+build/
+*.egg-info/
+
+# Local IDE/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

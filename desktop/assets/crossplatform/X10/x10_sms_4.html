@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 600px; margin: 0 auto;">
+    <title>X10 SMS - Email Inbox Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; min-height: 100vh; padding: 20px; }
+        .email-container { max-width: 100%; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); overflow: hidden; }
+        .email-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .email-header h1 { font-size: 18px; font-weight: 500; }
+        .email-header .actions { display: flex; gap: 15px; font-size: 14px; }
+        .toolbar { background: #fafafa; padding: 8px 15px; border-bottom: 1px solid #e0e0e0; display: flex; gap: 10px; }
+        .toolbar button { background: none; border: 1px solid #ddd; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .toolbar button:hover { background: #f0f0f0; }
+        .email-list { }
+        .email-item { display: flex; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0f0f0; gap: 12px; cursor: pointer; transition: background 0.2s; }
+        .email-item:hover { background: #f9f9f9; }
+        .email-item.unread { background: #f0f7ff; }
+        .email-item.unread:hover { background: #e8f2ff; }
+        .email-item .checkbox { width: 18px; height: 18px; border: 1px solid #ccc; border-radius: 3px; }
+        .email-item .star { font-size: 16px; cursor: pointer; color: #ccc; }
+        .email-item .star.active { color: #fdd835; }
+        .email-item .sender { width: 150px; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-item .subject { flex: 1; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-item .preview { flex: 2; font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-item .time { font-size: 12px; color: #888; min-width: 80px; text-align: right; }
+        .sender-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>📧 Inbox (<span id="siteName"></span>)</h1>
+            <div class="actions">⚙️ 🔍</div>
+        </div>
+        <div class="toolbar">
+            <button>⬜ Select all</button>
+            <button>🔄 Refresh</button>
+            <button>📁 Archive</button>
+            <button>🗑️ Delete</button>
+        </div>
+        <div class="email-list" id="emailList"></div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=4');
+                site = '4';
+            }
+            
+            const data = X10.getDataForPage("sms");
+            const siteInfo = X10.getSite();
+            
+            document.getElementById('siteName').textContent = siteInfo;
+            const emailList = document.getElementById('emailList');
+            
+            if (data) {
+                const color = '#007bff';
+                const isUnread = true;
+                const item = document.createElement('div');
+                item.className = `email-item ${isUnread ? 'unread' : ''}`;
+                
+                item.innerHTML = `
+                    <input type="checkbox" class="checkbox">
+                    <span class="star">☆</span>
+                    <div class="sender">
+                        <span class="sender-badge" style="background: ${color}22; color: ${color}">${data.sender || 'Unknown'}</span>
+                    </div>
+                    <div class="subject">${isUnread ? '<strong>' : ''}Message${isUnread ? '</strong>' : ''}</div>
+                    <div class="preview">${data.body || ''}</div>
+                    <div class="time">${data.time || 'Just now'}</div>
+                `;
+                emailList.appendChild(item);
+            } else {
+                emailList.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">No messages</div>';
+            }
+        })();
+    </script>
+</body>
+</html>

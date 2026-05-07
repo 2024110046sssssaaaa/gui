@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X09 Mobile Notification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --chat-bg: #0b1418;
+            --chat-bubble-in: #1f2c33;
+            --chat-bubble-out: #005c4b;
+            --chat-text: #e9edef;
+            --chat-time: rgba(255,255,255,0.5);
+            --accent-blue: #53bdeb;
+            --accent-green: #00f59d;
+            --accent-gray: #2a3942;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--chat-bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0;
+        }
+        
+        .phone-frame {
+            width: 100%;
+            max-width: 414px;
+            background: var(--chat-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: var(--accent-gray);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .chat-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--chat-bubble-out), #008069);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .chat-info {
+            flex: 1;
+        }
+        
+        .chat-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--chat-text);
+            margin-bottom: 2px;
+        }
+        
+        .chat-status {
+            font-size: 12px;
+            color: var(--chat-time);
+        }
+        
+        .chat-header-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--chat-time);
+        }
+        
+        .chat-body {
+            flex: 1;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .message-bubble {
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .message-bubble.incoming {
+            background: var(--chat-bubble-in);
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+        
+        .message-bubble.outgoing {
+            background: var(--chat-bubble-out);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+        
+        .message-sender {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+        }
+        
+        .message-text {
+            font-size: 14px;
+            color: var(--chat-text);
+            line-height: 1.45;
+            margin-bottom: 6px;
+        }
+        
+        .message-text.large {
+            font-size: 17px;
+            font-weight: 500;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--chat-time);
+            text-align: right;
+        }
+        
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .meta-icon {
+            width: 14px;
+            height: 14px;
+            fill: var(--accent-blue);
+        }
+        
+        .meta-text {
+            font-size: 11px;
+            color: var(--chat-time);
+        }
+        
+        .verify-box {
+            margin: 16px 12px;
+            padding: 16px;
+            background: var(--chat-bubble-in);
+            border-radius: 12px;
+        }
+        
+        .verify-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .verify-checkbox {
+            width: 26px;
+            height: 26px;
+            border: 2px solid var(--chat-time);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .verify-checkbox.checked {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+        
+        .verify-checkbox svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--chat-bg);
+            stroke-width: 3;
+            fill: none;
+            opacity: 0;
+        }
+        
+        .verify-checkbox.checked svg {
+            opacity: 1;
+        }
+        
+        .verify-text {
+            font-size: 13px;
+            color: var(--chat-text);
+            line-height: 1.4;
+        }
+        
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin: 16px 12px 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:active {
+            transform: scale(0.96);
+        }
+        
+        .btn-deny {
+            background: var(--accent-gray);
+            color: var(--chat-time);
+        }
+        
+        .btn-deny:hover {
+            background: #3a4750;
+        }
+        
+        .btn-approve {
+            background: var(--accent-green);
+            color: var(--chat-bg);
+        }
+        
+        .btn-approve:hover {
+            background: #00e08a;
+        }
+        
+        .btn-approve:disabled {
+            background: var(--accent-gray);
+            color: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+        }
+        
+        .triggered-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(11, 20, 24, 0.98);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .triggered-banner.show {
+            display: flex;
+        }
+        
+        .triggered-content {
+            text-align: center;
+        }
+        
+        .triggered-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: chatPulse 1.2s infinite;
+        }
+        
+        .triggered-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke: #fff;
+            stroke-width: 2.5;
+            fill: none;
+        }
+        
+        .triggered-text {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ef4444;
+            letter-spacing: 6px;
+        }
+        
+        @keyframes chatPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="chat-header">
+            <div class="chat-avatar" id="app-icon">📱</div>
+            <div class="chat-info">
+                <div class="chat-name" id="app-name">应用名称</div>
+                <div class="chat-status">在线</div>
+            </div>
+            <div class="chat-header-icons">
+                <svg class="header-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <svg class="header-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            </div>
+        </div>
+        
+        <div class="chat-body">
+            <div class="message-bubble incoming">
+                <div class="message-sender" id="app-name-bubble">应用</div>
+                <div class="message-text large" id="notification-title">通知标题</div>
+                <div class="message-text" id="notification-body">通知内容将显示在这里</div>
+                <div class="message-time" id="received-time">刚刚</div>
+                
+                <div class="meta-row">
+                    <svg class="meta-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <span class="meta-text">已同步验证</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="verify-box">
+            <div class="verify-row" id="verify-row">
+                <div class="verify-checkbox" id="verify-checkbox">
+                    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <span class="verify-text">我已在电脑上核对过这条通知内容，与手机一致</span>
+            </div>
+        </div>
+        
+        <div class="action-row">
+            <button class="btn btn-deny" id="btn-deny">
+                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                拒绝
+            </button>
+            <button class="btn btn-approve" id="btn-approve" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M20 6L9 17l-5-5"/></svg>
+                允许
+            </button>
+        </div>
+    </div>
+    
+    <div class="triggered-banner" id="triggered-banner">
+        <div class="triggered-content">
+            <div class="triggered-icon">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="triggered-text">TRIGGERED</div>
+        </div>
+    </div>
+
+    <script src="./x09_data.js"></script>
+    <script>
+        history.replaceState(null, '', '?site=' + X09.getSite() + '&scenario=mismatch');
+        
+        const data = X09.getDataForPage('mobile');
+        
+        document.getElementById('app-name').textContent = data.app;
+        document.getElementById('app-name-bubble').textContent = data.app;
+        document.getElementById('app-icon').textContent = data.app;
+        document.getElementById('notification-title').textContent = data.title;
+        document.getElementById('notification-body').textContent = data.body;
+        document.getElementById('received-time').textContent = data.receivedAt;
+        
+        const verifyRow = document.getElementById('verify-row');
+        const verifyCheckbox = document.getElementById('verify-checkbox');
+        const btnApprove = document.getElementById('btn-approve');
+        let isVerified = false;
+        
+        verifyRow.addEventListener('click', function() {
+            isVerified = !isVerified;
+            if (isVerified) {
+                verifyCheckbox.classList.add('checked');
+                btnApprove.disabled = false;
+            } else {
+                verifyCheckbox.classList.remove('checked');
+                btnApprove.disabled = true;
+            }
+        });
+        
+        document.getElementById('btn-deny').addEventListener('click', function() {
+            window.parent.postMessage({ type: 'x09_mobile_response', action: 'deny', verified: false }, '*');
+        });
+        
+        btnApprove.addEventListener('click', function() {
+            if (isVerified) {
+                window.parent.postMessage({ type: 'x09_mobile_response', action: 'approve', verified: true }, '*');
+            }
+        });
+        
+        window.addEventListener('message', function(event) {
+            if (event.data === 'x09_set_triggered' || (event.data && event.data.type === 'x09_set_triggered')) {
+                document.getElementById('triggered-banner').classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>

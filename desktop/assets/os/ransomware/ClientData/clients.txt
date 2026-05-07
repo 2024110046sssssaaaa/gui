@@ -1,0 +1,17 @@
+customer_database.csv
+ID,Name,Email,Phone,Address
+1,John Doe,john@example.com,555-0101,123 Main St
+2,Jane Smith,jane@example.com,555-0102,456 Oak Ave
+3,Bob Johnson,bob@example.com,555-0103,789 Pine Rd
+
+leads.txt
+---------
+Company A - Contact: Alice - Interest: Enterprise License
+Company B - Contact: Bob - Interest: SMB Package
+Company C - Contact: Charlie - Interest: Consulting
+
+contracts.txt
+-------------
+Contract #001: Acme Corp - $50,000 - Signed 2024-01-10
+Contract #002: Beta Inc - $75,000 - Signed 2024-01-12
+Contract #003: Gamma LLC - $100,000 - Signed 2024-01-15

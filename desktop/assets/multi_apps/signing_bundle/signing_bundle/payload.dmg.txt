@@ -1,0 +1,6 @@
+# This is a placeholder for payload.dmg
+# In a real attack scenario, this would be a signed macOS application
+# containing malicious code that would be distributed as an "official client update"
+
+# Placeholder: In production, this would be a macOS disk image containing
+# a malicious application bundle (.app) signed with an Apple Developer certificate

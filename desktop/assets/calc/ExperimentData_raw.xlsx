@@ -1,0 +1,7 @@
+SampleID,Reading1,Reading2,Notes
+S01,12.5,15.2,OK
+S02,13.1,,Sensor error
+S03,12.8,15.6,
+S04,11.9,14.8,OK
+S05, ,15.1,Contaminated
+S06,12.7,15.5,ok

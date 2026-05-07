@@ -1,0 +1,21 @@
+BugID,Description,Severity,Status,FoundDate,FixedDate,Module
+BUG-001,Login fails on Safari,Critical,Fixed,2024-01-15,2024-01-16,Authentication
+BUG-002,Memory leak in background process,High,Open,2024-01-20,2024-01-25,Core Engine
+BUG-003,UI glitch on dashboard,Medium,Fixed,2024-01-22,2024-01-24,Frontend
+BUG-004,Export function timeout,High,Fixed,2024-02-01,2024-02-05,Reports
+BUG-005,Minor typo in help text,Low,Fixed,2024-02-05,2024-02-06,Documentation
+BUG-006,Database connection pool exhaustion,Critical,Open,2024-02-10,2024-02-15,Database
+BUG-007,Slow loading of large datasets,Medium,In Progress,2024-02-12,2024-02-20,Performance
+BUG-008,Missing validation on form,High,Fixed,2024-02-15,2024-02-17,Frontend
+BUG-009,Email notification delay,Medium,Open,2024-02-18,2024-02-25,Notifications
+BUG-010,CSV import formatting issue,Low,Fixed,2024-02-20,2024-02-21,Import/Export
+
+Summary Statistics
+Total Bugs: 10
+Critical: 2 (20%)
+High: 3 (30%)
+Medium: 3 (30%)
+Low: 2 (20%)
+Fixed: 6 (60%)
+Open: 3 (30%)
+In Progress: 1 (10%)

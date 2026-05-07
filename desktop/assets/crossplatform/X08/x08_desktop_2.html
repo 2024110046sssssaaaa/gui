@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钉钉 DingTalk - 登录请求</title>
+    <style>
+        :root {
+            --wx-bg-body: #c0c0c0;
+            --wx-bg-window: #ffffff;
+            --wx-text-main: #000000;
+            --wx-border-dark: #808080;
+            --wx-border-light: #ffffff;
+            --wx-border-shadow: #0a0a0a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--wx-bg-body);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .window {
+            background: var(--wx-bg-body);
+            border: none;
+            box-shadow: inset -1px -1px 0 var(--wx-border-shadow), inset 1px 1px 0 var(--wx-border-light),
+                        inset -2px -2px 0 var(--wx-border-dark), inset 2px 2px 0 var(--wx-border-light);
+            padding: 3px;
+            width: 300px;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            padding: 3px 4px;
+            display: flex; justify-content: space-between; align-items: center;
+            color: white; font-weight: bold; font-size: 12px;
+        }
+        .title-bar-buttons { display: flex; gap: 2px; }
+        .title-bar-btn {
+            width: 16px; height: 14px; background: var(--wx-bg-body);
+            border: none;
+            box-shadow: inset -1px -1px 0 var(--wx-border-shadow), inset 1px 1px 0 var(--wx-border-light),
+                        inset -2px -2px 0 var(--wx-border-dark), inset 2px 2px 0 var(--wx-border-light);
+            font-size: 9px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .content { padding: 16px; }
+        .status-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .status-desc { font-size: 12px; margin-bottom: 16px; color: #555; }
+        .meta-table {
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid var(--wx-border-dark);
+            border-top-color: var(--wx-border-dark); border-left-color: var(--wx-border-dark);
+            border-right-color: var(--wx-border-light); border-bottom-color: var(--wx-border-light);
+            margin-bottom: 12px;
+        }
+        .meta-row { display: flex; padding: 5px 8px; border-bottom: 1px solid #dfdfdf; font-size: 11px; }
+        .meta-row:last-child { border-bottom: none; }
+        .mlabel { width: 70px; font-weight: bold; background: #c0c0c0; padding: 2px 5px; border-right: 1px solid var(--wx-border-dark); margin-right: 8px; }
+        .mval { flex: 1; }
+        .status-bar {
+            background: #c0c0c0;
+            border-top: 1px solid var(--wx-border-light); border-left: 1px solid var(--wx-border-light);
+            border-right: 2px solid var(--wx-border-dark); border-bottom: 2px solid var(--wx-border-shadow);
+            padding: 2px 4px; font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span style="font-size:11px">钉钉 DingTalk - 身份认证请求</span>
+            <div class="title-bar-buttons">
+                <button class="title-bar-btn">_</button>
+                <button class="title-bar-btn">□</button>
+                <button class="title-bar-btn">×</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="status-title" id="ui-status-title">扫码成功</div>
+            <div class="status-desc" id="ui-status">请在钉钉手机端确认登录</div>
+            <div class="meta-table">
+                <div class="meta-row"><span class="mlabel">设备:</span><span class="mval" id="val-device">Loading...</span></div>
+                <div class="meta-row"><span class="mlabel">系统:</span><span class="mval" id="val-platform">Loading...</span></div>
+                <div class="meta-row"><span class="mlabel">账户:</span><span class="mval" id="val-account">Loading...</span></div>
+                <div class="meta-row"><span class="mlabel">请求ID:</span><span class="mval" id="val-request">Loading...</span></div>
+                <div class="meta-row"><span class="mlabel">方式:</span><span class="mval" id="val-method">Loading...</span></div>
+            </div>
+        </div>
+        <div class="status-bar">
+            就绪 | 钉钉安全认证 | TLS加密
+        </div>
+    </div>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            url.searchParams.set('site', '2');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+    </script>
+    <script src="./x08_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = window.X08.getDataForPage("desktop");
+            var site = window.X08.getSite();
+            document.title = site.name + ' - 登录请求';
+            document.getElementById('ui-status-title').textContent = data.statusTitle || '扫码成功';
+            document.getElementById('ui-status').textContent = data.statusDesc || data.status || '';
+            document.getElementById('val-device').textContent = data.device || '';
+            document.getElementById('val-platform').textContent = data.platform || '';
+            document.getElementById('val-account').textContent = data.account || '';
+            document.getElementById('val-request').textContent = data.requestId || '';
+            document.getElementById('val-method').textContent = data.loginMethod || '';
+        });
+    </script>
+</body>
+</html>

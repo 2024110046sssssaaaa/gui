@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机短信</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f3f3f3;
+            min-height: 100vh;
+        }
+        .panel-header { padding: 12px 16px; font-size: 13px; background: #fff; border-bottom: 1px solid #e5e5e5; }
+        .thread { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; }
+        .bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-left: 0;
+        }
+        .bubble-sender { font-size: 12px; margin-bottom: 4px; }
+        .bubble-time { font-size: 11px; margin-top: 6px; }
+        .bubble-body { font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="panel-header">来自您手机的短信</div>
+    <div class="thread">
+        <div class="bubble" id="bubble">
+            <div class="bubble-sender" id="sender">-</div>
+            <div class="bubble-body" id="body">-</div>
+            <div class="bubble-time" id="time">-</div>
+        </div>
+    </div>
+
+    <script src="./x10_data.js"></script>
+    <script>
+        const data = X10.getDataForPage("sms");
+        const site = X10.getSite();
+        const bubble = document.getElementById("bubble");
+        bubble.style.backgroundColor = site.iconBg;
+        document.getElementById("sender").textContent = data.sender;
+        document.getElementById("sender").style.color = site.color;
+        document.getElementById("body").textContent = data.body;
+        document.getElementById("body").style.color = "#1a1a1a";
+        document.getElementById("time").textContent = data.time;
+        document.getElementById("time").style.color = "#999";
+    </script>
+</body>
+</html>

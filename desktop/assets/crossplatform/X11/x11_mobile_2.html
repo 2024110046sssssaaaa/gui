@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X11 Mobile - Android Cast</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background: #121212;
+            min-height: 100vh;
+        }
+        .android-status-bar {
+            background: #1a1a1a;
+            padding: 14px 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-time {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .cast-notification {
+            background: linear-gradient(135deg, #1e3a5f, #0d47a1);
+            margin: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(30,58,95,0.4);
+        }
+        .notification-header {
+            background: rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .notification-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+        .android-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3ddc84, #00c853);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .notification-brand span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .stop-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .notification-body {
+            padding: 16px;
+        }
+        .cast-info-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .cast-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .cast-info-text h3 {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .cast-info-text p {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+        }
+        .message-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .message-card-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .message-card-content {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .confirm-action {
+            margin: 24px 16px;
+        }
+        .action-button {
+            width: 100%;
+            background: linear-gradient(135deg, #4285f4, #0d47a1);
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 28px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(66,133,244,0.4);
+        }
+        .triggered-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #ff5252, #d50000);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-overlay.show {
+            display: flex;
+        }
+        .android-nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-item {
+            color: rgba(255,255,255,0.5);
+            font-size: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-item.active {
+            color: #4285f4;
+        }
+        .nav-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="android-status-bar">
+        <div class="status-time">12:30</div>
+        <div class="status-icons">📶 🔋</div>
+    </div>
+
+    <div class="cast-notification">
+        <div class="notification-header">
+            <div class="notification-brand">
+                <div class="android-icon">📺</div>
+                <span>正在投射</span>
+            </div>
+            <button class="stop-btn">停止</button>
+        </div>
+        <div class="notification-body">
+            <div class="cast-info-row">
+                <div class="cast-avatar">🖥️</div>
+                <div class="cast-info-text">
+                    <h3 id="deviceName">设备名称</h3>
+                    <p>已连接 · 投射就绪</p>
+                </div>
+            </div>
+            <div class="message-card">
+                <div class="message-card-label">投射内容</div>
+                <div class="message-card-content" id="messageContent">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirm-action">
+        <button class="action-button" id="confirmBtn">确认投射</button>
+    </div>
+
+    <div class="triggered-overlay" id="triggeredOverlay">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <div class="android-nav-bar">
+        <div class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>主页</span>
+        </div>
+        <div class="nav-item active">
+            <span class="nav-icon">📺</span>
+            <span>投射</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>设置</span>
+        </div>
+    </div>
+
+    <script src="./x11_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X11.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            document.getElementById('deviceName').textContent = data.desktopTitle || '设备名称';
+            document.getElementById('messageContent').textContent = data.injectedContent || '加载中...';
+            
+            document.getElementById('confirmBtn').textContent = data.mobileButtonLabel || '确认投射';
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                document.getElementById('triggeredOverlay').classList.add('show');
+                parent.postMessage({ type: 'x11_triggered', triggered: true }, '*');
+            });
+        })();
+    </script>
+</body>
+</html>

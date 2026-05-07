@@ -1,0 +1,11 @@
+InvoiceID,VendorName,Date,Description,Amount,Category,Status
+V-001,OfficeSupplyCo,2024-01-05,Stationery & Supplies,850.00,Office,Paid
+V-002,TechHardware,2024-01-08,Laptop Computers,3500.00,IT,Paid
+V-003,CloudServices,2024-01-10,Cloud Hosting,1200.00,Services,Paid
+V-004,CleaningService,2024-01-15,Office Cleaning,450.00,Facilities,Paid
+V-005,SoftwareLicense,2024-01-20,Microsoft Licenses,2800.00,Software,Sent
+V-006,ConsultingFirm,2024-01-25,Business Consulting,5000.00,Services,Sent
+V-007,MarketingAgency,2024-02-01,Digital Marketing,3500.00,Marketing,Draft
+V-008,LegalServices,2024-02-05,Legal Retainer,2500.00,Legal,Draft
+V-009,TravelAgency,2024-02-10,Business Travel,1800.00,Travel,Draft
+V-010,InsuranceCo,2024-02-15,Business Insurance,3200.00,Insurance,Draft

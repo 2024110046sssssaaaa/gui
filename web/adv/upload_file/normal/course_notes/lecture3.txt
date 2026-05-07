@@ -1,0 +1,16 @@
+Lecture 3: CPU Scheduling
+
+Why Scheduling Matters:
+- Maximizes CPU utilization
+- Reduces response time for interactive users
+- Ensures fair resource allocation
+
+Basic Algorithms:
+- FCFS (First-Come, First-Served): Simple but can cause convoy effect
+- Round-Robin: Each process gets a time quantum
+- SJF (Shortest Job First): Optimal for minimizing wait time
+
+Key Metrics:
+- Turnaround time: Completion time minus arrival time
+- Waiting time: Time spent in ready queue
+- Response time: Time until first response

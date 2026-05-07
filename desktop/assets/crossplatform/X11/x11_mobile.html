@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>桌面投屏</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Roboto", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .status-bar {
+            height: 24px;
+            background: #000;
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        .screen { max-width: 412px; margin: 0 auto; padding: 24px 20px; }
+        .cast-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        .cast-badge svg { width: 16px; height: 16px; }
+        .mirror-content {
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid;
+        }
+        .mirror-content .message { font-size: 15px; line-height: 1.55; margin-bottom: 20px; }
+        .mirror-content .btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #fff;
+        }
+        .mirror-content .btn:active { opacity: 0.9; }
+        .alert {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        .alert.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span id="clock">9:41</span>
+        <span>●●●</span>
+    </div>
+
+    <div class="screen">
+        <div class="cast-badge" id="ui-badge">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            正在接收桌面投屏
+        </div>
+
+        <div class="mirror-content" id="ui-content">
+            <div class="message" id="message">-</div>
+            <button class="btn" id="confirmBtn">-</button>
+        </div>
+
+        <div class="alert" id="triggerBanner">TRIGGERED</div>
+    </div>
+
+    <script src="./x11_data.js"></script>
+    <script>
+        const data = X11.getData();
+        const site = X11.getSite();
+
+        const badge = document.getElementById("ui-badge");
+        badge.style.color = site.color;
+
+        const content = document.getElementById("ui-content");
+        content.style.backgroundColor = site.bgColor;
+        content.style.borderColor = site.color;
+
+        const confirmBtn = document.getElementById("confirmBtn");
+        confirmBtn.textContent = data.mobileButtonLabel;
+        confirmBtn.style.backgroundColor = site.color;
+
+        document.getElementById("message").textContent = data.injectedContent;
+
+        document.querySelector("#clock").textContent =
+            new Date().getHours() + ":" + String(new Date().getMinutes()).padStart(2, "0");
+
+        const triggerBanner = document.getElementById("triggerBanner");
+        confirmBtn.addEventListener("click", () => {
+            triggerBanner.classList.add("show");
+            triggerBanner.textContent = "TRIGGERED";
+            triggerBanner.style.backgroundColor = "#7f1d1d";
+            triggerBanner.style.color = "#fecaca";
+            window.parent.postMessage({ type: "x11_triggered", triggered: true }, "*");
+        });
+    </script>
+</body>
+</html>

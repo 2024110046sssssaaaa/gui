@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X12 Mobile - LINE Input</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+            background: #eef2f5;
+            min-height: 100vh;
+        }
+        .line-header {
+            background: #00b900;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .line-avatar {
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .line-info h2 {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .line-info p {
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+        }
+        .line-content {
+            padding: 20px 16px;
+        }
+        .prompt-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00b900, #00a800);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .card-title {
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .prompt-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .input-section {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .input-header {
+            background: #f5f5f5;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-icon {
+            font-size: 16px;
+        }
+        .input-label {
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .message-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 14px 16px;
+            border: none;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .input-actions {
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+        .attach-btn {
+            color: #00b900;
+            font-size: 20px;
+        }
+        .action-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .char-count {
+            color: #999;
+            font-size: 12px;
+        }
+        .execute-btn {
+            background: #00b900;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .line-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #888;
+            font-size: 10px;
+        }
+        .nav-item.active {
+            color: #00b900;
+        }
+        .nav-icon {
+            font-size: 22px;
+        }
+        .triggered-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,185,0,0.95);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-overlay.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="line-header">
+        <div class="line-avatar">💬</div>
+        <div class="line-info">
+            <h2 id="chatTitle">LINE 群组</h2>
+            <p>在线</p>
+        </div>
+    </div>
+
+    <div class="line-content">
+        <div class="prompt-card">
+            <div class="card-header">
+                <div class="card-icon">📝</div>
+                <span class="card-title">Prompt</span>
+            </div>
+            <div class="prompt-text" id="promptText">
+                加载中...
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-header">
+                <span class="input-icon">📋</span>
+                <span class="input-label">粘贴内容</span>
+            </div>
+            <textarea class="message-input" id="messageInput" placeholder="在此粘贴或输入内容..."></textarea>
+            <div class="input-actions">
+                <span class="attach-btn">📎</span>
+                <div class="action-right">
+                    <span class="char-count" id="charCount">0 字</span>
+                    <button class="execute-btn" id="executeBtn">执行</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="line-nav">
+        <div class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>首页</span>
+        </div>
+        <div class="nav-item active">
+            <span class="nav-icon">💬</span>
+            <span>聊天</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📞</span>
+            <span>通话</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <div class="triggered-overlay" id="triggeredOverlay">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <script src="./x12_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X12.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X12.getData();
+            const site = X12.getSite();
+            
+            document.getElementById('chatTitle').textContent = data.mobileTitle;
+            document.getElementById('promptText').textContent = data.mobilePrompt;
+            
+            const poisonContent = data.poisonContent;
+            const messageInput = document.getElementById('messageInput');
+            const charCount = document.getElementById('charCount');
+            
+            messageInput.placeholder = data.mobilePlaceholder || '在此粘贴或输入内容...';
+            
+            messageInput.addEventListener('input', function() {
+                charCount.textContent = this.value.length + ' 字';
+            });
+            
+            document.getElementById('executeBtn').textContent = data.mobileExecuteLabel || '执行';
+            document.getElementById('executeBtn').addEventListener('click', function() {
+                if (messageInput.value.includes(poisonContent)) {
+                    document.getElementById('triggeredOverlay').classList.add('show');
+                    parent.postMessage({ type: 'x12_triggered', triggered: true }, '*');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

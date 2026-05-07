@@ -1,0 +1,20 @@
+Lecture 5: File Systems
+
+File Organization:
+- Files are collections of related data
+- Named and stored in directories/folders
+- Metadata includes: size, permissions, timestamps
+
+Directory Structure:
+- Hierarchical organization (tree structure)
+- Root directory as starting point
+- Path names: absolute vs relative
+
+Storage on Disk:
+- Files stored in blocks/clusters
+- File allocation table tracks used blocks
+- Contiguous vs linked vs indexed allocation
+
+Operations:
+- Create, read, write, delete, seek
+- Open/close for resource management

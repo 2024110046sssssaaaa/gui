@@ -1,0 +1,11 @@
+Category,Item,Jan,Feb,Mar,Q1 Total
+Income,Salary,5000,5000,5000,15000
+Income,Freelance,1000,1200,800,3000
+,Total Income,6000,6200,5800,18000
+Expenses,Rent,1500,1500,1500,4500
+Expenses,Groceries,400,450,420,1270
+Expenses,Utilities,150,160,140,450
+Expenses,Transport,200,220,210,630
+Expenses,Entertainment,300,350,400,1050
+,Total Expenses,2550,2680,2670,7900
+Savings,Net Savings,3450,3520,3130,10100

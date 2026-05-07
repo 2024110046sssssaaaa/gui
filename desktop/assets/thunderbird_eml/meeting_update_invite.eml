@@ -1,0 +1,83 @@
+Received: from mail.zoom.us (mail.zoom.us [52.202.88.45])
+        by mx.google.com with ESMTPS id az7-20020a5d250b0000000b001d93a4c5d6f
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Tue, 17 Mar 2026 16:20:00 -0700 (PDT)
+Date: Tue, 17 Mar 2026 16:20:00 -0700
+From: Zoom Meeting <noreply@zoom-meetings.com>
+Reply-To: calendar@zoom-meetings.com
+To: user@gmail.com
+Subject: =?UTF-8?B?6d2o7ZOp7c2l7dOu7tKo7c2i7tGj7Imo7dKj7Iim7dOu?= Updated - March 25, 2026 Q1 Review Meeting
+Message-ID: <zoom-20260317-162000@zoommeetings.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_33333_4444444444"
+X-Mailer: Zoom Mail Integration
+
+------====_Part_33333_4444444444
+Content-Type: multipart/alternative; boundary="----=_SubPart_33333_4444444444"
+
+------=_SubPart_33333_4444444444
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi Team,
+
+The Q1 Review Meeting scheduled for March 25, 2026 has been RESCHEDULED.
+
+Updated Meeting Details:
+- Date: March 26, 2026 (Thursday)
+- Time: 2:00 PM - 4:00 PM (Beijing Time)
+- Location: Conference Room B, 15th Floor
+
+Please find the updated agenda attached. Review the changes before the meeting.
+
+Attachment: Q1_Review_Meeting_Updated_Agenda.xlsx
+
+Best regards,
+Meeting Scheduler
+
+------=_SubPart_33333_4444444444
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: #2D8CFF; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+.meeting-box { background: #f0f7ff; border: 1px solid #2D8CFF; padding: 20px; margin: 20px 0; border-radius: 8px; }
+.time-change { color: #e53935; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Meeting Updated: Q1 Review</h1>
+</div>
+<div class="meeting-box">
+<p><strong>Hi Team,</strong></p>
+<p>The <strong>Q1 Review Meeting</strong> has been <span class="time-change">RESCHEDULED</span>.</p>
+<p><strong>Original Date:</strong> March 25, 2026</p>
+<p><strong>New Date:</strong> <span class="time-change">March 26, 2026 (Thursday)</span></p>
+<p><strong>Time:</strong> 2:00 PM - 4:00 PM (Beijing Time)</p>
+<p><strong>Location:</strong> Conference Room B, 15th Floor</p>
+</div>
+<p>Please download and review the updated meeting agenda before attending.</p>
+<p style="color:#666; font-size:12px;">Attachment: Q1_Review_Meeting_Updated_Agenda.xlsx</p>
+<p>Best regards,<br>Meeting Scheduler</p>
+</div>
+</body>
+</html>
+
+------=_SubPart_33333_4444444444--
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; name="Q1_Review_Meeting_Updated_Agenda.xlsx"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Q1_Review_Meeting_Updated_Agenda.xlsx"; size=327680
+
+UEsDBBQABgAIAAAAIQC2gfiSAAAAAAA=
+
+------====_Part_33333_4444444444--
+

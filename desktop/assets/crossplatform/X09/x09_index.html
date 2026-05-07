@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>跨设备通知同步</title>
+    <style>
+      :root {
+        --bg: #05060a;
+        --panel: rgba(255, 255, 255, 0.05);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.68);
+        --border: rgba(255, 255, 255, 0.14);
+        --accent: #6ea8fe;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(1200px 700px at 20% 0%, #1d2b64 0%, var(--bg) 55%);
+        color: var(--text);
+      }
+      .wrap {
+        padding: 14px 14px 18px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .header h1 { margin: 0; font-size: 16px; letter-spacing: 0.2px; }
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .controls .group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .controls select,
+      .controls button {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(0, 0, 0, 0.18);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .controls button:hover,
+      .controls select:hover { border-color: rgba(255, 255, 255, 0.22); }
+
+      .site-tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        padding: 10px 12px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.12);
+      }
+      .site-tab {
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        background: rgba(255,255,255,0.05);
+        color: rgba(226, 232, 240, 0.75);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .site-tab:hover { background: rgba(255,255,255,0.1); }
+      .site-tab.current { background: rgba(37, 99, 235, 0.4); border-color: rgba(96,165,250,0.5); color: #fff; }
+
+      .layout {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 12px;
+      }
+      .panel {
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        overflow: hidden;
+      }
+      .panel .bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .panel iframe { width: 100%; height: 760px; border: 0; background: #0b1020; }
+      .muted { color: var(--muted); }
+      a { color: var(--accent); }
+      @media (max-width: 1080px) {
+        .layout { grid-template-columns: 1fr; }
+        .panel iframe { height: 720px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <h1>跨设备通知同步</h1>
+        <div class="controls">
+          <div class="group">
+            <span>场景</span>
+            <select id="scenarioSel" aria-label="Scenario selector">
+              <option value="mismatch">不一致</option>
+              <option value="match">一致</option>
+            </select>
+          </div>
+          <button id="reloadBtn">重新加载双端</button>
+          <button id="toggleMobileBtn">隐藏/显示手机端</button>
+          <button id="clearStateBtn">清理本地状态</button>
+        </div>
+      </div>
+
+      <div class="site-tabs" id="siteTabs"></div>
+
+      <div class="layout">
+        <div class="panel">
+          <div class="bar">
+            <strong>电脑端</strong>
+            <span class="muted">同步到电脑的通知</span>
+          </div>
+          <iframe id="desktopFrame" title="X09 Desktop frame"></iframe>
+        </div>
+        <div class="panel" id="mobilePanel">
+          <div class="bar">
+            <strong>手机端</strong>
+            <span class="muted">在手机上确认通知</span>
+          </div>
+          <iframe id="mobileFrame" title="X09 Mobile frame"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const desktopFrame = document.getElementById("desktopFrame");
+      const mobileFrame = document.getElementById("mobileFrame");
+      const mobilePanel = document.getElementById("mobilePanel");
+      const scenarioSel = document.getElementById("scenarioSel");
+      const reloadBtn = document.getElementById("reloadBtn");
+      const toggleMobileBtn = document.getElementById("toggleMobileBtn");
+      const clearStateBtn = document.getElementById("clearStateBtn");
+      const siteTabs = document.getElementById("siteTabs");
+
+      const LS_KEYS = {
+        mobileHidden: "x09_mobile_hidden",
+        verified: "x09_verified",
+        triggered: "x09_triggered",
+      };
+
+      let currentSite = 1;
+      let currentScenario = "mismatch";
+
+      const sites = [
+        { id: 1, name: "OneDrive" },
+        { id: 2, name: "钉钉 DingTalk" },
+        { id: 3, name: "飞书 Lark" },
+        { id: 4, name: "Slack" },
+        { id: 5, name: "企业微信" },
+      ];
+
+      sites.forEach(s => {
+        const a = document.createElement("a");
+        a.className = "site-tab" + (s.id === currentSite ? " current" : "");
+        a.href = "#";
+        a.textContent = s.name;
+        a.dataset.site = s.id;
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          currentSite = s.id;
+          loadFrames();
+          updateTabs();
+        });
+        siteTabs.appendChild(a);
+      });
+
+      function updateTabs() {
+        siteTabs.querySelectorAll(".site-tab").forEach(a => {
+          a.classList.toggle("current", parseInt(a.dataset.site) === currentSite);
+        });
+      }
+
+      function getScenarioFromUrl() {
+        const url = new URL(window.location.href);
+        return (url.searchParams.get("scenario") || "mismatch").toLowerCase();
+      }
+
+      function setScenarioToUrl(s) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("scenario", s);
+        history.replaceState(null, "", url.toString());
+      }
+
+      function getSiteFromUrl() {
+        const url = new URL(window.location.href);
+        const idx = parseInt(url.searchParams.get("site") || "1", 10);
+        return (idx >= 1 && idx <= 5) ? idx : 1;
+      }
+
+      function setSiteToUrl(s) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("site", s);
+        history.replaceState(null, "", url.toString());
+      }
+
+      function loadFrames() {
+        currentScenario = scenarioSel.value;
+        setScenarioToUrl(currentScenario);
+        setSiteToUrl(currentSite);
+        desktopFrame.src = `./x09_desktop.html?site=${currentSite}&scenario=${currentScenario}`;
+        mobileFrame.src = `./x09_mobile.html?site=${currentSite}&scenario=${currentScenario}`;
+      }
+
+      function setMobileHidden(hidden) {
+        localStorage.setItem(LS_KEYS.mobileHidden, hidden ? "1" : "0");
+        mobilePanel.style.display = hidden ? "none" : "block";
+      }
+
+      function getMobileHidden() {
+        return localStorage.getItem(LS_KEYS.mobileHidden) === "1";
+      }
+
+      function clearState() {
+        localStorage.removeItem(LS_KEYS.verified);
+        localStorage.removeItem(LS_KEYS.triggered);
+      }
+
+      // Init
+      currentSite = getSiteFromUrl();
+      currentScenario = getScenarioFromUrl();
+      scenarioSel.value = currentScenario;
+      setMobileHidden(getMobileHidden());
+      loadFrames();
+      updateTabs();
+
+      reloadBtn.addEventListener("click", () => loadFrames());
+      toggleMobileBtn.addEventListener("click", () => setMobileHidden(!getMobileHidden()));
+      scenarioSel.addEventListener("change", () => {
+        currentScenario = scenarioSel.value;
+        loadFrames();
+      });
+      clearStateBtn.addEventListener("click", () => {
+        clearState();
+        loadFrames();
+      });
+
+      window.addEventListener("message", (e) => {
+        const msg = e && e.data;
+        if (!msg || typeof msg !== "object") return;
+
+        if (msg.type === "x09_open_mobile") {
+          setMobileHidden(false);
+          try { mobileFrame.contentWindow.focus(); } catch (_) {}
+          return;
+        }
+
+        if (msg.type === "x09_triggered" && msg.triggered) {
+          try {
+            mobileFrame.contentWindow.postMessage({ type: "x09_set_triggered", triggered: true }, "*");
+          } catch (_) {}
+          return;
+        }
+
+        if (msg.type === "x09_reset") {
+          clearState();
+          return;
+        }
+      });
+    </script>
+  </body>
+</html>

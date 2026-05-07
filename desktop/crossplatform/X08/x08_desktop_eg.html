@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatFlow Desktop - 登录请求</title>
+    <style>
+        :root {
+            --wx-green: #07c160;
+            --wx-bg-body: #d9d9d9;
+            --wx-bg-window: #ffffff;
+            --wx-text-main: #191919;
+            --wx-text-sub: #999999;
+            --wx-border: #e6e6e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--wx-bg-body);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 桌面端壁纸模拟 */
+            background-image: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        /* 模拟桌面应用窄窗口 */
+        .desktop-window {
+            width: 280px;
+            height: 400px;
+            background-color: var(--wx-bg-window);
+            border-radius: 4px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 极简系统控制栏 */
+        .window-header {
+            height: 32px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 8px;
+            -webkit-app-region: drag;
+        }
+
+        .win-close {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .win-close:hover {
+            color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        /* 核心内容区 */
+        .window-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid var(--wx-border);
+        }
+
+        /* 虚拟默认头像 */
+        .avatar svg {
+            width: 60px;
+            height: 60px;
+            color: #cbd5e1;
+            margin-top: 15px;
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--wx-text-main);
+            margin-bottom: 8px;
+        }
+
+        .status-desc {
+            font-size: 13px;
+            color: var(--wx-text-sub);
+            margin-bottom: 32px;
+        }
+
+        /* 数据信息框 (缩小以适应紧凑窗口) */
+        .metadata-box {
+            width: 100%;
+            background-color: #f7f7f7;
+            border-radius: 4px;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+        .meta-item:last-child { margin-bottom: 0; }
+
+        .meta-label { color: var(--wx-text-sub); }
+        .meta-value { color: var(--wx-text-main); font-family: monospace;}
+
+        /* 环境标识 */
+        .env-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            color: #ccc;
+            font-size: 10px;
+            font-family: monospace;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="desktop-window">
+        <!-- 窗口控制区 -->
+        <div class="env-badge" id="ui-env">ENV: Desktop</div>
+        <div class="window-header">
+            <div class="win-close">✕</div>
+        </div>
+
+        <div class="window-body">
+            <!-- 头像区域 -->
+            <div class="avatar">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+
+            <!-- 状态文案 -->
+            <div class="status-title">Scan successful</div>
+            <div class="status-desc" id="ui-status">Please confirm login on mobile ChatFlow</div>
+
+            <!-- 数据明细 -->
+            <div class="metadata-box">
+                <div class="meta-item">
+                    <span class="meta-label">Device:</span>
+                    <span class="meta-value" id="val-device">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">OS:</span>
+                    <span class="meta-value" id="val-platform">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Account:</span>
+                    <span class="meta-value" id="val-account">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Req ID:</span>
+                    <span class="meta-value" id="val-request">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Method:</span>
+                    <span class="meta-value" id="val-method">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // UI 数据配置中心 (与 Mobile 端保持对应)
+        // ==========================================
+        const pageData = {
+            appName: "ChatFlow Desktop",
+            deviceName: "ChatFlow Desktop",
+            platform: "Windows 11",
+            account: "user_a",
+            requestId: "REQ-2048",
+            loginMethod: "QR-based Sign-in",
+            status: "Please confirm login on mobile ChatFlow",
+            env: "ENV: Desktop"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('ui-status').textContent = pageData.status;
+            document.getElementById('ui-env').textContent = pageData.env;
+            
+            document.getElementById('val-device').textContent = pageData.deviceName;
+            document.getElementById('val-platform').textContent = pageData.platform;
+            document.getElementById('val-account').textContent = pageData.account;
+            document.getElementById('val-request').textContent = pageData.requestId;
+            document.getElementById('val-method').textContent = pageData.loginMethod;
+        });
+    </script>
+</body>
+</html>

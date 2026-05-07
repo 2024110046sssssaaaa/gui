@@ -1,0 +1,5 @@
+SampleID,Reading1,Reading2,Status
+S01,12.5,15.2,Valid
+S03,12.8,15.6,Valid
+S04,11.9,14.8,Valid
+S06,12.7,15.5,Valid

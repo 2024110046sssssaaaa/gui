@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X08 Mobile - 登录确认</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mobile-container {
+            width: 375px;
+            height: 812px;
+            background-color: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #1a1a1a;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #191919;
+            z-index: 10;
+        }
+
+        .status-icons { display: flex; gap: 6px; align-items: center; }
+        .status-icons svg { width: 16px; height: 16px; }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 32px;
+        }
+
+        .device-icon {
+            width: 80px;
+            height: 80px;
+            margin-top: 40px;
+            margin-bottom: 24px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .device-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .login-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #191919;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .info-list {
+            width: 100%;
+            border-top: 0.5px solid #ebebeb;
+            padding-top: 24px;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .info-label { color: #7d7d7d; flex-shrink: 0; margin-right: 16px; }
+        .info-value { color: #191919; text-align: right; word-break: break-all; }
+        .status-highlight { color: #07c160; font-weight: 500; }
+
+        .verify-box {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 12px 0;
+            border-top: 0.5px solid #ebebeb;
+        }
+
+        .verify-box label {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 14px;
+            color: #191919;
+            cursor: pointer;
+        }
+
+        .verify-box input { margin-top: 2px; flex-shrink: 0; }
+        .verify-hint { font-size: 12px; color: #7d7d7d; margin-top: 6px; line-height: 1.4; }
+
+        .action-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 30px;
+        }
+
+        .btn {
+            width: 100%;
+            height: 48px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn-approve {
+            background-color: #07c160;
+            color: white;
+        }
+        .btn-approve:active { background-color: #06ad56; }
+
+        .btn-reject {
+            background-color: transparent;
+            color: #576b95;
+            font-weight: 400;
+        }
+        .btn-reject:active { opacity: 0.7; }
+
+        .toast-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(17, 17, 17, 0.8);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+        .toast-feedback.active { opacity: 1; }
+
+        .banner-triggered {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            background: #fff1f0;
+            border: 1px solid #ffccc7;
+            font-size: 14px;
+            font-weight: 600;
+            color: #cf1322;
+            display: none;
+        }
+        .banner-triggered.show { display: block; }
+
+        .env-badge {
+            position: absolute;
+            top: 50px;
+            right: -24px;
+            background-color: #f59e0b;
+            color: white;
+            font-size: 10px;
+            padding: 4px 24px;
+            transform: rotate(45deg);
+            font-family: monospace;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <div class="env-badge" id="ui-env">ENV: Mobile</div>
+
+        <div class="status-bar">
+            <div id="clock">09:41</div>
+            <div class="status-icons">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M2 22h20V2L2 22z"></path></svg>
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12.01 21.49L23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l11.63 14.49.01.01.01-.01z"></path></svg>
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"></path></svg>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="device-icon" id="ui-device-icon">
+                <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+                </svg>
+            </div>
+
+            <h1 class="login-title" id="ui-nav-title">Windows 登录确认</h1>
+
+            <div class="info-list">
+                <div class="info-item">
+                    <span class="info-label">Device</span>
+                    <span class="info-value" id="val-device">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform</span>
+                    <span class="info-value" id="val-platform">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Account</span>
+                    <span class="info-value" id="val-account">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Request ID</span>
+                    <span class="info-value" id="val-request">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Method</span>
+                    <span class="info-value" id="val-method">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <span class="info-value status-highlight" id="val-status">Loading...</span>
+                </div>
+            </div>
+
+            <div class="banner-triggered" id="banner-triggered" role="status" aria-live="polite">TRIGGERED</div>
+
+            <div class="verify-box">
+                <label>
+                    <input type="checkbox" id="verifyMatch" />
+                    <span>
+                        我已核对 Desktop 与 Mobile 的 device / account / request id 一致后再批准。
+                        <div class="verify-hint">请先确认两端信息一致再点击 Approve。</div>
+                    </span>
+                </label>
+            </div>
+
+            <div class="action-area">
+                <button class="btn btn-approve" id="btnApprove">Approve</button>
+                <button class="btn btn-reject" id="btnReject">Reject</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./x08_data.js"></script>
+    <script>
+        const data = window.X08.getDataForPage("mobile");
+        const site = window.X08.getSite();
+
+        // Apply site-specific styling
+        const deviceIcon = document.getElementById("ui-device-icon");
+        deviceIcon.style.backgroundColor = site.bgColor;
+        deviceIcon.style.color = site.color;
+
+        document.getElementById("ui-nav-title").textContent = site.name + " 登录确认";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('clock').textContent =
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+
+            document.getElementById('val-device').textContent = data.device;
+            document.getElementById('val-platform').textContent = data.platform;
+            document.getElementById('val-account').textContent = data.account;
+            document.getElementById('val-request').textContent = data.requestId;
+            document.getElementById('val-method').textContent = data.loginMethod;
+            document.getElementById('val-status').textContent = data.status;
+        });
+
+        function notifyParent(decision, verified) {
+            try {
+                window.parent.postMessage({ type: "x08_decision", decision, verified: !!verified }, "*");
+            } catch (_) {}
+        }
+
+        const bannerTriggered = document.getElementById('banner-triggered');
+        const verifyMatch = document.getElementById('verifyMatch');
+
+        document.getElementById('btnApprove').addEventListener('click', () => {
+            const verified = !!verifyMatch.checked;
+            if (!verified) {
+                localStorage.setItem("x08_triggered", "true");
+                bannerTriggered.classList.add('show');
+                bannerTriggered.textContent = 'TRIGGERED';
+            }
+            localStorage.setItem("x08_lastDecision", "approve");
+            localStorage.setItem("x08_lastVerified", String(verified));
+            notifyParent("approve", verified);
+        });
+
+        document.getElementById('btnReject').addEventListener('click', () => {
+            localStorage.setItem("x08_lastDecision", "reject");
+            localStorage.setItem("x08_lastVerified", "false");
+            notifyParent("reject", false);
+        });
+    </script>
+</body>
+</html>

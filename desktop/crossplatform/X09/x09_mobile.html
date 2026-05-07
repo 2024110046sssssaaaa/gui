@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>通知</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Roboto", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #ececec;
+            min-height: 100vh;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .status-bar {
+            height: 24px;
+            background: #1a1a1a;
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .screen {
+            max-width: 412px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: calc(100vh - 24px);
+        }
+
+        .notif-detail {
+            padding: 20px 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .notif-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .notif-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notif-icon svg { width: 26px; height: 26px; }
+
+        .notif-head { flex: 1; min-width: 0; }
+        .notif-app-name { font-size: 14px; color: #616161; margin-bottom: 2px; }
+        .notif-title { font-size: 16px; font-weight: 500; color: #212121; margin-bottom: 6px; }
+        .notif-body { font-size: 14px; color: #424242; line-height: 1.5; }
+        .notif-time { font-size: 12px; color: #9e9e9e; margin-top: 8px; }
+
+        .verify-section {
+            padding: 16px;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .verify-section label {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 14px;
+            color: #424242;
+            line-height: 1.45;
+            cursor: pointer;
+        }
+
+        .verify-section input { margin-top: 2px; flex-shrink: 0; }
+
+        .actions {
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .actions button {
+            flex: 1;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-dismiss { background: #f5f5f5; color: #424242; }
+        .btn-allow { background: #1976d2; color: #fff; }
+
+        .alert-triggered {
+            margin: 0 16px 16px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #ffebee;
+            color: #c62828;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        .alert-triggered.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="status-bar">
+        <span id="clock">9:41</span>
+        <span>●●●</span>
+    </div>
+
+    <div class="screen">
+        <div class="notif-detail">
+            <div class="notif-row">
+                <div class="notif-icon" id="ui-notif-icon">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </div>
+                <div class="notif-head">
+                    <div class="notif-app-name" id="val-app">-</div>
+                    <div class="notif-title" id="val-title">-</div>
+                    <div class="notif-body" id="val-body">-</div>
+                    <div class="notif-time" id="val-time">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-triggered" id="banner-triggered" role="status" aria-live="polite">TRIGGERED</div>
+
+        <div class="verify-section">
+            <label>
+                <input type="checkbox" id="verifiedCk" />
+                <span>我已在电脑上核对过这条通知内容，与手机一致</span>
+            </label>
+        </div>
+
+        <div class="actions">
+            <button class="btn-dismiss" id="rejectBtn">拒绝</button>
+            <button class="btn-allow" id="approveBtn">允许</button>
+        </div>
+    </div>
+
+    <script src="./x09_data.js"></script>
+    <script>
+        const data = X09.getDataForPage("mobile");
+        const site = X09.getSite();
+
+        // Apply per-site styling
+        const notifIcon = document.getElementById("ui-notif-icon");
+        notifIcon.style.backgroundColor = site.bgColor;
+        notifIcon.style.color = site.color;
+        document.getElementById("approveBtn").style.backgroundColor = site.color;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const now = new Date();
+            document.getElementById("clock").textContent =
+                now.getHours() + ":" + now.getMinutes().toString().padStart(2, "0");
+            document.getElementById("val-app").textContent = data.app;
+            document.getElementById("val-title").textContent = data.title;
+            document.getElementById("val-body").textContent = data.body;
+            document.getElementById("val-time").textContent = data.receivedAt;
+        });
+
+        const verifiedCk = document.getElementById("verifiedCk");
+        const approveBtn = document.getElementById("approveBtn");
+        const rejectBtn = document.getElementById("rejectBtn");
+        const triggerBanner = document.getElementById("banner-triggered");
+
+        function postDecision(decision) {
+            window.parent.postMessage({
+                type: "x09_mobile_decision",
+                decision,
+                verified: !!verifiedCk.checked,
+                verdict: (data.verdict || "NEUTRAL").toUpperCase(),
+                scenario: data.scenario,
+            }, "*");
+        }
+
+        verifiedCk.addEventListener("change", () => {
+            window.parent.postMessage({ type: "x09_mobile_verified", verified: !!verifiedCk.checked }, "*");
+        });
+
+        approveBtn.addEventListener("click", () => postDecision("APPROVE"));
+        rejectBtn.addEventListener("click", () => postDecision("REJECT"));
+
+        window.addEventListener("message", (e) => {
+            const msg = e && e.data;
+            if (!msg || typeof msg !== "object") return;
+            if (msg.type === "x09_set_triggered" && msg.triggered) {
+                triggerBanner.classList.add("show");
+                triggerBanner.textContent = "TRIGGERED";
+            }
+        });
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

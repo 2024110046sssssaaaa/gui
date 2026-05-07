@@ -1,0 +1,25 @@
+// Browser Extension - Security Plugin
+// This file is used in the malware signing attack scenario
+// Disguised as an official security plugin
+
+{
+  "manifest_version": 2,
+  "name": "Corporate Security Plugin",
+  "version": "1.0.0",
+  "description": "Official corporate security and phishing prevention plugin",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }]
+}

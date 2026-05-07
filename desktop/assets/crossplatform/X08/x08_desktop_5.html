@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业微信 WeCom - 登录请求</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #1b4332 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            width: 300px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #07bc0c, #00e676);
+            padding: 16px;
+            text-align: center;
+            color: white;
+        }
+        .card-header h1 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .card-header p { font-size: 11px; opacity: 0.9; }
+        .card-body { padding: 16px; }
+        .status-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #1a1a1a; }
+        .status-desc { font-size: 12px; color: #888; margin-bottom: 14px; }
+        .meta-list { background: #f8f9fa; border-radius: 6px; padding: 4px 0; }
+        .meta-row { display: flex; justify-content: space-between; padding: 7px 12px; font-size: 12px; border-bottom: 1px solid #e8e8e8; }
+        .meta-row:last-child { border-bottom: none; }
+        .ml { color: #888; }
+        .mv { color: #333; font-family: monospace; font-weight: 500; }
+        .footer { padding: 10px 16px; background: #f0f9f0; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #e0f0e0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1 id="ui-app-name">企业微信 WeCom</h1>
+            <p>桌面端登录验证</p>
+        </div>
+        <div class="card-body">
+            <div class="status-title" id="ui-status-title">登录请求已提交</div>
+            <div class="status-desc" id="ui-status">请等待企业微信管理员审批</div>
+            <div class="meta-list">
+                <div class="meta-row"><span class="ml">设备</span><span class="mv" id="val-device">Loading...</span></div>
+                <div class="meta-row"><span class="ml">系统</span><span class="mv" id="val-platform">Loading...</span></div>
+                <div class="meta-row"><span class="ml">账户</span><span class="mv" id="val-account">Loading...</span></div>
+                <div class="meta-row"><span class="ml">请求ID</span><span class="mv" id="val-request">Loading...</span></div>
+                <div class="meta-row"><span class="ml">验证方式</span><span class="mv" id="val-method">Loading...</span></div>
+            </div>
+        </div>
+        <div class="footer">企业微信安全中心 · TLS加密传输</div>
+    </div>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            url.searchParams.set('site', '5');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+    </script>
+    <script src="./x08_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = window.X08.getDataForPage("desktop");
+            var site = window.X08.getSite();
+            document.title = site.name + ' - 登录请求';
+            document.getElementById('ui-app-name').textContent = site.name;
+            document.getElementById('ui-status-title').textContent = data.statusTitle || '登录请求已提交';
+            document.getElementById('ui-status').textContent = data.statusDesc || data.status || '';
+            document.getElementById('val-device').textContent = data.device || '';
+            document.getElementById('val-platform').textContent = data.platform || '';
+            document.getElementById('val-account').textContent = data.account || '';
+            document.getElementById('val-request').textContent = data.requestId || '';
+            document.getElementById('val-method').textContent = data.loginMethod || '';
+        });
+    </script>
+</body>
+</html>

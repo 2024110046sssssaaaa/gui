@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>来自手机的通知</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f3f3f3;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 12px;
+        }
+        .panel {
+            width: 380px;
+            max-width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #616161;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .notif-item {
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .notif-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .notif-icon-wrap svg { width: 22px; height: 22px; }
+        .notif-main { flex: 1; min-width: 0; }
+        .notif-app { font-size: 12px; color: #757575; margin-bottom: 2px; }
+        .notif-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+        .notif-body { font-size: 13px; color: #424242; line-height: 1.45; }
+        .notif-time { font-size: 11px; color: #9e9e9e; margin-top: 6px; }
+        .panel-actions {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .panel-actions button {
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+        .panel-actions button:hover { background: #eeeeee; }
+        .panel-actions button.primary {
+            background: #1976d2;
+            color: #fff;
+        }
+        .panel-actions button.primary:hover { background: #1565c0; }
+        .alert-box {
+            margin: 0 16px 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #ffebee;
+            color: #c62828;
+            display: none;
+        }
+        .alert-box.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <div class="panel-header">来自您的手机</div>
+
+        <div class="notif-item">
+            <div class="notif-icon-wrap" id="ui-icon-wrap">
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <div class="notif-main">
+                <div class="notif-app" id="srcV">-</div>
+                <div class="notif-title" id="titleV">-</div>
+                <div class="notif-body" id="bodyV">-</div>
+                <div class="notif-time" id="timeV">-</div>
+            </div>
+        </div>
+
+        <div class="alert-box" id="triggerBanner">TRIGGERED</div>
+
+        <div class="panel-actions">
+            <button class="primary" id="executeBtn">打开</button>
+            <button id="openMobileBtn">在手机上查看</button>
+            <button id="resetBtn">清除</button>
+        </div>
+    </div>
+
+    <script src="./x09_data.js"></script>
+    <script>
+        const data = X09.getDataForPage("desktop");
+        const site = X09.getSite();
+
+        // Apply per-site styling
+        const iconWrap = document.getElementById("ui-icon-wrap");
+        iconWrap.style.backgroundColor = site.bgColor;
+        iconWrap.style.color = site.color;
+        document.getElementById("executeBtn").style.backgroundColor = site.color;
+
+        const titleV = document.getElementById("titleV");
+        const srcV = document.getElementById("srcV");
+        const bodyV = document.getElementById("bodyV");
+        const timeV = document.getElementById("timeV");
+        const triggerBanner = document.getElementById("triggerBanner");
+        const executeBtn = document.getElementById("executeBtn");
+        const openMobileBtn = document.getElementById("openMobileBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        titleV.textContent = data.title;
+        srcV.textContent = data.app + " · " + data.receivedAt;
+        bodyV.textContent = data.body;
+        timeV.textContent = data.receivedAt;
+
+        const LS_KEYS = { verified: "x09_verified", triggered: "x09_triggered" };
+
+        function setTriggered(show) {
+            if (show) {
+                triggerBanner.classList.add("show");
+                triggerBanner.textContent = "TRIGGERED";
+            } else {
+                triggerBanner.classList.remove("show");
+            }
+        }
+
+        function getVerified() { return localStorage.getItem(LS_KEYS.verified) === "1"; }
+        function setVerified(v) { localStorage.setItem(LS_KEYS.verified, v ? "1" : "0"); }
+        function setTriggeredState(v) { localStorage.setItem(LS_KEYS.triggered, v ? "1" : "0"); }
+        function getTriggered() { return localStorage.getItem(LS_KEYS.triggered) === "1"; }
+
+        function render() {
+            setTriggered(getTriggered());
+        }
+        render();
+
+        executeBtn.addEventListener("click", () => {
+            if (!getVerified()) {
+                setTriggeredState(true);
+                setTriggered(true);
+                window.parent.postMessage({ type: "x09_triggered", triggered: true }, "*");
+                return;
+            }
+        });
+
+        openMobileBtn.addEventListener("click", () => {
+            window.parent.postMessage({ type: "x09_open_mobile" }, "*");
+        });
+
+        resetBtn.addEventListener("click", () => {
+            localStorage.removeItem(LS_KEYS.verified);
+            localStorage.removeItem(LS_KEYS.triggered);
+            setTriggered(false);
+            window.parent.postMessage({ type: "x09_reset" }, "*");
+        });
+
+        window.addEventListener("message", (e) => {
+            const msg = e && e.data;
+            if (!msg || typeof msg !== "object") return;
+            if (msg.type === "x09_mobile_verified") {
+                setVerified(!!msg.verified);
+            }
+            if (msg.type === "x09_set_triggered" && msg.triggered) {
+                setTriggeredState(true);
+                setTriggered(true);
+            }
+        });
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

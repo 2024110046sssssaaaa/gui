@@ -1,0 +1,16 @@
+[Unit]
+Description=OSWorld Flask Server
+After=graphical.target
+
+[Service]
+Type=simple
+User=user
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+WorkingDirectory=/home/user
+ExecStart=/bin/bash -c 'cd /home/user && python3 _start_server.py'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

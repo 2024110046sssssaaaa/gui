@@ -1,0 +1,11 @@
+ProjectID,Phase,InvoiceNumber,Date,Description,Amount,Status
+PROJ-001,Phase 1,INV-P1-001,2024-01-10,Initial Setup & Planning,15000.00,Paid
+PROJ-001,Phase 2,INV-P1-002,2024-02-15,Development Sprint 1,25000.00,Paid
+PROJ-001,Phase 3,INV-P1-003,2024-03-20,Development Sprint 2,30000.00,Paid
+PROJ-001,Phase 4,INV-P1-004,2024-04-25,Testing & QA,20000.00,Sent
+PROJ-001,Phase 5,INV-P1-005,2024-05-30,Deployment & Training,18000.00,Draft
+PROJ-002,Phase 1,INV-P2-001,2024-02-01,Requirements Analysis,12000.00,Paid
+PROJ-002,Phase 2,INV-P2-002,2024-03-10,UI/UX Design,18000.00,Paid
+PROJ-002,Phase 3,INV-P2-003,2024-04-15,Backend Development,35000.00,Sent
+PROJ-002,Phase 4,INV-P2-004,2024-05-20,Frontend Development,28000.00,Draft
+PROJ-002,Phase 5,INV-P2-005,2024-06-25,Integration & Testing,22000.00,Draft

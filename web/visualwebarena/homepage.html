@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebArena Homepage</title>
+</head>
+<body>
+    <h1>Welcome to WebArena</h1>
+    <p>Available websites:</p>
+    <ul>
+        <li><a href="http://gitlab.com">GitLab</a></li>
+        <li><a href="http://reddit.com">Reddit</a></li>
+        <li><a href="http://onestopmarket.com">Shopping</a></li>
+    </ul>
+    <h2>Login Credentials</h2>
+    <pre id="passwords"></pre>
+    <script>
+        document.getElementById('passwords').textContent = JSON.stringify({
+            "gitlab": {"username": "byteblaze", "password": "hello1234"},
+            "reddit": {"username": "MarvelsGrantMan136", "password": "test1234"}
+        }, null, 2);
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 600px; margin: 0 auto;">
+    <title>X11 Desktop - AirPlay Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: rgba(0,0,0,0.85); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .airplay-container { background: #1c1c1e; border-radius: 20px; padding: 30px; width: 90%; max-width: 450px; box-shadow: 0 25px 80px rgba(0,0,0,0.5); border: 1px solid #3a3a3c; }
+        .airplay-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .airplay-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .airplay-icon svg { width: 48px; height: 48px; }
+        .airplay-info { flex: 1; }
+        .airplay-title { font-size: 22px; font-weight: 600; color: white; margin-bottom: 6px; }
+        .airplay-status { font-size: 14px; color: #8e8e93; display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 8px; height: 8px; background: #30d158; border-radius: 50%; }
+        .airplay-preview { background: #2c2c2e; border-radius: 12px; padding: 20px; margin-bottom: 20px; min-height: 120px; }
+        .preview-title { font-size: 13px; color: #8e8e93; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .preview-content { font-size: 15px; color: #fff; line-height: 1.5; }
+        .airplay-footer { text-align: center; padding-top: 15px; border-top: 1px solid #3a3a3c; }
+        .airplay-footer p { font-size: 12px; color: #636366; }
+        .device-badge { display: inline-flex; align-items: center; gap: 6px; background: #2c2c2e; padding: 6px 12px; border-radius: 16px; font-size: 12px; color: #fff; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="airplay-container">
+        <div class="device-badge">
+            <span class="status-dot"></span>
+            <span id="deviceName">Apple TV</span>
+        </div>
+        
+        <div class="airplay-header">
+            <div class="airplay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+            </div>
+            <div class="airplay-info">
+                <div class="airplay-title" id="title">Screen Mirroring</div>
+                <div class="airplay-status">
+                    <span class="status-dot"></span>
+                    <span id="status">Ready to receive</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="airplay-preview">
+            <div class="preview-title">Now Playing</div>
+            <div class="preview-content" id="previewContent">
+                Waiting for content...
+            </div>
+        </div>
+        
+        <div class="airplay-footer">
+            <p>Cast from your mobile device to display content here</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=1');
+                site = '1';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('deviceName').textContent = siteName;
+            document.getElementById('title').textContent = data.desktopTitle || 'Screen Mirroring';
+            document.getElementById('status').textContent = data.desktopStatus || 'Ready to receive';
+            document.getElementById('previewContent').textContent = data.injectedContent || 'Waiting for content...';
+        })();
+    </script>
+</body>
+</html>

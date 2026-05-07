@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X09 Desktop Notification 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .notification-container {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .triggered-banner {
+            display: none;
+            background: linear-gradient(180deg, #ff3b30 0%, #ff453a 100%);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+            letter-spacing: -0.2px;
+        }
+
+        .triggered-banner.show {
+            display: block;
+        }
+
+        .notification-widget {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 0.5px rgba(0, 0, 0, 0.05),
+                inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .header-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            opacity: 0.5;
+        }
+
+        .header-title {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-time {
+            margin-left: auto;
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .notification-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.4);
+            transition: background 0.2s ease;
+            position: relative;
+        }
+
+        .notification-row:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .app-icon-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .app-icon-container svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-name-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .app-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.65);
+        }
+
+        .time-badge {
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .notification-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 3px;
+            letter-spacing: -0.2px;
+        }
+
+        .notification-body {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.5);
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .action-strip {
+            display: flex;
+            padding: 10px 16px 14px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: none;
+            text-align: center;
+        }
+
+        .action-btn.primary {
+            background: #007aff;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+        }
+
+        .action-btn.primary:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn.secondary {
+            background: rgba(120, 120, 128, 0.12);
+            color: #007aff;
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(120, 120, 128, 0.2);
+        }
+
+        .action-btn.danger {
+            background: rgba(255, 59, 48, 0.12);
+            color: #ff3b30;
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(255, 59, 48, 0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .close-mini {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .notification-row:hover .close-mini {
+            opacity: 1;
+        }
+
+        .close-mini svg {
+            width: 12px;
+            height: 12px;
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .close-mini:hover svg {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .dismiss-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification-widget.dismissing {
+            animation: widgetDismiss 0.4s ease forwards;
+        }
+
+        @keyframes widgetDismiss {
+            to {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <div class="triggered-banner" id="triggeredBanner">
+            已触发安全警告
+        </div>
+        <div class="notification-widget" id="notificationWidget">
+            <div class="widget-header">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="header-title">通知中心</span>
+                <span class="header-time" id="headerTime"></span>
+            </div>
+            <div class="notification-row">
+                <button class="close-mini" onclick="dismissNotification()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div class="app-icon-container" id="iconContainer">
+                    <svg id="iconSvg" viewBox="0 0 24 24" fill="currentColor"></svg>
+                </div>
+                <div class="content-area">
+                    <div class="app-name-bar">
+                        <span class="app-name" id="appName">加载中...</span>
+                        <span class="time-badge" id="receivedTime">--</span>
+                    </div>
+                    <div class="notification-title" id="notificationTitle">通知标题</div>
+                    <div class="notification-body" id="notificationBody">通知内容</div>
+                </div>
+            </div>
+            <div class="action-strip">
+                <button class="action-btn primary" id="openBtn" onclick="handleOpen()">打开</button>
+                <button class="action-btn secondary" onclick="handleViewOnPhone()">在手机上查看</button>
+                <button class="action-btn danger" onclick="dismissNotification()">清除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        history.replaceState(null, '', '?site=' + X09.getSite() + '&scenario=mismatch');
+
+        const notificationData = X09.getDataForPage("desktop");
+        let isVerified = false;
+        let isTriggered = false;
+
+        const iconGradients = {
+            security: 'linear-gradient(135deg, #5856d6 0%, #af52de 100%)',
+            message: 'linear-gradient(135deg, #007aff 0%, #5ac8fa 100%)',
+            warning: 'linear-gradient(135deg, #ff9500 0%, #ffcc00 100%)',
+            default: 'linear-gradient(135deg, #34c759 0%, #30d158 100%)'
+        };
+
+        const iconSvgs = {
+            security: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+            warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+            default: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
+        };
+
+        function renderNotification(data) {
+            document.getElementById('appName').textContent = data.app || '系统通知';
+            document.getElementById('notificationTitle').textContent = data.title || '通知';
+            document.getElementById('notificationBody').textContent = data.body || '';
+            document.getElementById('receivedTime').textContent = data.receivedAt || formatTime(new Date());
+            document.getElementById('headerTime').textContent = formatTime(new Date());
+
+            const iconType = data.iconType || 'default';
+            const iconContainer = document.getElementById('iconContainer');
+            iconContainer.style.background = iconGradients[iconType] || iconGradients.default;
+            document.getElementById('iconSvg').innerHTML = iconSvgs[iconType] || iconSvgs.default;
+
+            updateOpenButton();
+        }
+
+        function formatTime(date) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return hours + ':' + minutes;
+        }
+
+        function updateOpenButton() {
+            const openBtn = document.getElementById('openBtn');
+            if (isTriggered) {
+                openBtn.textContent = '已触发';
+                openBtn.disabled = true;
+            } else if (!isVerified) {
+                openBtn.textContent = data.actionLabel || '打开';
+                openBtn.disabled = false;
+            } else {
+                openBtn.textContent = '已验证 ' + (data.actionLabel || '打开');
+                openBtn.disabled = true;
+            }
+        }
+
+        function handleOpen() {
+            if (isVerified || isTriggered) return;
+
+            isTriggered = true;
+            document.getElementById('triggeredBanner').classList.add('show');
+            updateOpenButton();
+
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'x09_set_triggered' }, '*');
+            }
+        }
+
+        function handleViewOnPhone() {
+            const site = X09.getSite();
+            const phoneUrl = window.location.pathname.replace('desktop', 'phone') + '?site=' + site + '&scenario=mismatch';
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'x09_navigate_phone', url: phoneUrl }, '*');
+            }
+        }
+
+        function dismissNotification() {
+            const widget = document.getElementById('notificationWidget');
+            widget.classList.add('dismissing');
+        }
+
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'x09_mobile_verified') {
+                isVerified = true;
+                updateOpenButton();
+            }
+            if (event.data && event.data.type === 'x09_set_triggered') {
+                isTriggered = true;
+                document.getElementById('triggeredBanner').classList.add('show');
+                updateOpenButton();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotification(notificationData);
+        });
+
+        renderNotification(notificationData);
+    </script>
+</body>
+</html>

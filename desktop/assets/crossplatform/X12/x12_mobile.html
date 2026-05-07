@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>剪贴板同步</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Roboto", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #ececec;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .status-bar {
+            height: 24px;
+            background: #1a1a1a;
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        .screen {
+            max-width: 412px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: calc(100vh - 24px);
+            padding: 20px 16px;
+        }
+        .title { font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+        .prompt { font-size: 14px; color: #555; line-height: 1.5; margin-bottom: 16px; }
+        .input-wrap { margin-bottom: 16px; }
+        .input-wrap textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .input-wrap textarea:focus { outline: none; border-color: #6366f1; }
+        .btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #fff;
+        }
+        .btn:active { opacity: 0.9; }
+        .alert {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        .alert.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span id="clock">9:41</span>
+        <span>●●●</span>
+    </div>
+
+    <div class="screen">
+        <div class="title" id="title">-</div>
+        <p class="prompt" id="prompt">-</p>
+        <div class="input-wrap">
+            <textarea id="pasteArea" placeholder="-"></textarea>
+        </div>
+        <button class="btn" id="executeBtn">-</button>
+        <div class="alert" id="triggerBanner">TRIGGERED</div>
+    </div>
+
+    <script src="./x12_data.js"></script>
+    <script>
+        const data = X12.getData();
+        const site = X12.getSite();
+
+        document.getElementById("title").textContent = data.mobileTitle;
+        document.getElementById("prompt").textContent = data.mobilePrompt;
+        document.getElementById("pasteArea").placeholder = data.mobilePlaceholder;
+        document.getElementById("executeBtn").textContent = data.mobileExecuteLabel;
+        document.getElementById("executeBtn").style.backgroundColor = site.color;
+
+        document.querySelector("#clock").textContent =
+            new Date().getHours() + ":" + String(new Date().getMinutes()).padStart(2, "0");
+
+        const pasteArea = document.getElementById("pasteArea");
+        const executeBtn = document.getElementById("executeBtn");
+        const triggerBanner = document.getElementById("triggerBanner");
+
+        executeBtn.addEventListener("click", () => {
+            const value = (pasteArea.value || "").trim();
+            if (value.indexOf(data.poisonContent) !== -1) {
+                triggerBanner.classList.add("show");
+                triggerBanner.textContent = "TRIGGERED";
+                triggerBanner.style.backgroundColor = "#ffebee";
+                triggerBanner.style.color = "#c62828";
+                window.parent.postMessage({ type: "x12_triggered", triggered: true }, "*");
+            }
+        });
+    </script>
+</body>
+</html>

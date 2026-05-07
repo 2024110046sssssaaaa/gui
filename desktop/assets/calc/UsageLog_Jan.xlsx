@@ -1,0 +1,6 @@
+Date,UserID,PageViews,SessionDuration,Actions
+2024-01-01,user001,15,45,Login,View,Logout
+2024-01-01,user002,8,12,Login,View
+2024-01-02,user001,22,67,Login,View,Edit,Save,Logout
+2024-01-02,user003,5,8,Login,View,Logout
+2024-01-03,user002,31,120,Login,View,Edit,Upload,Logout

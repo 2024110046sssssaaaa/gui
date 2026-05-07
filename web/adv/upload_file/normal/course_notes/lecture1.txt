@@ -1,0 +1,7 @@
+Lecture 1: Introduction to Operating Systems
+
+Key Points:
+- OS acts as an interface between hardware and software
+- Manages system resources (CPU, memory, storage)
+- Provides services for applications
+- Examples: Windows, Linux, macOS, Android

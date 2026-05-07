@@ -1,0 +1,7 @@
+共享驱动器内容
+==================================================
+路径                                    | 类型   | 大小(MB)
+SharedDrive/合同草稿_v2.docx            | docx  |    2.3
+SharedDrive/报价单_template.xlsx         | xlsx  |    0.5
+SharedDrive/客户名单_2024.xlsx           | xlsx  |    1.2
+SharedDrive/UI_v3.fig                  | fig   |   45.6

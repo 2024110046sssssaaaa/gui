@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X09 Desktop Notification 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1e2a3a;
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .notification-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .triggered-banner {
+            display: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 16px 16px 0 0;
+            margin-bottom: 0;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .triggered-banner.show {
+            display: block;
+            animation: bannerSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bannerSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-wrapper {
+            background: #2d3748;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: linear-gradient(180deg, #374151 0%, #2d3748 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            margin-right: 14px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .avatar svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .online-dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid #2d3748;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 3px;
+        }
+
+        .chat-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-menu-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s;
+        }
+
+        .chat-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .message-area {
+            padding: 20px 18px;
+            background: #262d3a;
+            min-height: 140px;
+        }
+
+        .message-bubble {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 18px 18px 18px 4px;
+            max-width: 85%;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            position: relative;
+            animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bubbleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .message-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .message-body {
+            font-size: 13px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .message-status {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .status-check {
+            width: 14px;
+            height: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .actions-area {
+            display: flex;
+            gap: 10px;
+            padding: 14px 18px 18px;
+            background: #262d3a;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: none;
+            text-align: center;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .action-btn.primary:active {
+            transform: translateY(0);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .dismiss-animation {
+            animation: chatDismiss 0.4s ease forwards;
+        }
+
+        @keyframes chatDismiss {
+            to {
+                opacity: 0;
+                transform: translateX(20px) scale(0.95);
+            }
+        }
+
+        .avatar-gradients = {
+            security: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            message: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            default: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <div class="triggered-banner" id="triggeredBanner">
+            安全警告 - 操作已触发
+        </div>
+        <div class="chat-wrapper" id="chatWrapper">
+            <div class="chat-header">
+                <div class="avatar-wrapper">
+                    <div class="avatar" id="avatarContainer">
+                        <svg id="avatarSvg" viewBox="0 0 24 24" fill="currentColor"></svg>
+                    </div>
+                    <div class="online-dot"></div>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name" id="appName">加载中...</div>
+                    <div class="chat-status">在线</div>
+                </div>
+                <button class="chat-menu-btn" onclick="dismissNotification()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="19" cy="12" r="1"/>
+                        <circle cx="5" cy="12" r="1"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="message-area">
+                <div class="message-bubble">
+                    <div class="message-title" id="notificationTitle">通知标题</div>
+                    <div class="message-body" id="notificationBody">通知内容</div>
+                    <div class="message-time" id="receivedTime">--</div>
+                    <div class="message-status">
+                        <svg class="status-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="actions-area">
+                <button class="action-btn primary" id="openBtn" onclick="handleOpen()">打开</button>
+                <button class="action-btn secondary" onclick="handleViewOnPhone()">在手机上查看</button>
+                <button class="action-btn danger" onclick="dismissNotification()">清除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        history.replaceState(null, '', '?site=' + X09.getSite() + '&scenario=mismatch');
+
+        const notificationData = X09.getDataForPage("desktop");
+        let isVerified = false;
+        let isTriggered = false;
+
+        const avatarGradients = {
+            security: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            message: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            default: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        };
+
+        const avatarSvgs = {
+            security: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+            message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+            warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+            default: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
+        };
+
+        function renderNotification(data) {
+            document.getElementById('appName').textContent = data.app || '系统通知';
+            document.getElementById('notificationTitle').textContent = data.title || '通知';
+            document.getElementById('notificationBody').textContent = data.body || '';
+            document.getElementById('receivedTime').textContent = data.receivedAt || new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+
+            const iconType = data.iconType || 'default';
+            const avatarContainer = document.getElementById('avatarContainer');
+            avatarContainer.style.background = avatarGradients[iconType] || avatarGradients.default;
+            document.getElementById('avatarSvg').innerHTML = avatarSvgs[iconType] || avatarSvgs.default;
+
+            updateOpenButton();
+        }
+
+        function updateOpenButton() {
+            const openBtn = document.getElementById('openBtn');
+            if (isTriggered) {
+                openBtn.textContent = '已触发';
+                openBtn.disabled = true;
+            } else if (!isVerified) {
+                openBtn.textContent = data.actionLabel || '打开';
+                openBtn.disabled = false;
+            } else {
+                openBtn.textContent = '已验证 ' + (data.actionLabel || '打开');
+                openBtn.disabled = true;
+            }
+        }
+
+        function handleOpen() {
+            if (isVerified || isTriggered) return;
+
+            isTriggered = true;
+            document.getElementById('triggeredBanner').classList.add('show');
+            updateOpenButton();
+
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'x09_set_triggered' }, '*');
+            }
+        }
+
+        function handleViewOnPhone() {
+            const site = X09.getSite();
+            const phoneUrl = window.location.pathname.replace('desktop', 'phone') + '?site=' + site + '&scenario=mismatch';
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'x09_navigate_phone', url: phoneUrl }, '*');
+            }
+        }
+
+        function dismissNotification() {
+            const wrapper = document.getElementById('chatWrapper');
+            wrapper.classList.add('dismiss-animation');
+        }
+
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'x09_mobile_verified') {
+                isVerified = true;
+                updateOpenButton();
+            }
+            if (event.data && event.data.type === 'x09_set_triggered') {
+                isTriggered = true;
+                document.getElementById('triggeredBanner').classList.add('show');
+                updateOpenButton();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotification(notificationData);
+        });
+
+        renderNotification(notificationData);
+    </script>
+</body>
+</html>

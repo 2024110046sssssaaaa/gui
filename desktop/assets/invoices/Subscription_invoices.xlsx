@@ -1,0 +1,11 @@
+SubscriptionID,CustomerName,InvoiceNumber,IssueDate,Period,Plan,Amount,Status
+SUB-001,TechCorp,SUB-INV-001,2024-01-01,Jan 2024,Enterprise,299.00,Paid
+SUB-002,InnovateLLC,SUB-INV-002,2024-01-01,Jan 2024,Professional,149.00,Paid
+SUB-003,DataSystems,SUB-INV-003,2024-01-01,Jan 2024,Professional,149.00,Paid
+SUB-004,TechCorp,SUB-INV-004,2024-02-01,Feb 2024,Enterprise,299.00,Paid
+SUB-005,InnovateLLC,SUB-INV-005,2024-02-01,Feb 2024,Professional,149.00,Paid
+SUB-006,StartUpInc,SUB-INV-006,2024-02-01,Feb 2024,Basic,49.00,Paid
+SUB-007,TechCorp,SUB-INV-007,2024-03-01,Mar 2024,Enterprise,299.00,Paid
+SUB-008,DataSystems,SUB-INV-008,2024-03-01,Mar 2024,Professional,149.00,Paid
+SUB-009,InnovateLLC,SUB-INV-009,2024-03-01,Mar 2024,Professional,149.00,Paid
+SUB-010,MegaCorp,SUB-INV-010,2024-03-01,Mar 2024,Enterprise,299.00,Paid

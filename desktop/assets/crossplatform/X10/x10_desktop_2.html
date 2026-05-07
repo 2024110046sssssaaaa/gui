@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>短信验证码 - X10</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+        }
+
+        .site-name {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 32px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .prompt {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .code-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .digit-box {
+            width: 48px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-weight: 600;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .digit-box.active {
+            border-color: #00d9ff;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), inset 0 0 20px rgba(0, 217, 255, 0.1);
+        }
+
+        .digit-box.filled {
+            background: rgba(0, 217, 255, 0.15);
+            border-color: rgba(0, 217, 255, 0.5);
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .code-display {
+            display: none;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 32px;
+            min-height: 18px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, #00d9ff 0%, #00b4d8 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .sms-link {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #00d9ff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .sms-link:hover {
+            opacity: 0.8;
+        }
+
+        .triggered-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+            text-align: center;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 16px;
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .typing-indicator {
+            display: none;
+            color: #00d9ff;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .typing-indicator span {
+            animation: pulse 1.4s infinite;
+            display: inline-block;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="triggered-banner" id="triggeredBanner">⚡ 触发成功</div>
+
+    <div class="container">
+        <div class="card">
+            <span class="site-name" id="siteName"></span>
+
+            <h1 class="title" id="title"></h1>
+            <p class="prompt" id="prompt"></p>
+
+            <input type="text" class="hidden-input" id="codeInput" maxlength="6" autocomplete="off">
+
+            <div class="code-grid" id="codeGrid">
+                <div class="digit-box active" data-index="0"></div>
+                <div class="digit-box" data-index="1"></div>
+                <div class="digit-box" data-index="2"></div>
+                <div class="digit-box" data-index="3"></div>
+                <div class="digit-box" data-index="4"></div>
+                <div class="digit-box" data-index="5"></div>
+            </div>
+
+            <p class="hint" id="hint"></p>
+            <p class="typing-indicator" id="typingIndicator">正在输入<span>.</span><span>.</span><span>.</span></p>
+
+            <button type="button" class="submit-btn" id="submitBtn" disabled></button>
+
+            <a class="sms-link" id="smsLink">查看手机同步的短信</a>
+        </div>
+    </div>
+
+    <script>
+        history.replaceState(null, '', '?site=' + X10.getSite());
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const data = X10.getDataForPage("desktop");
+            const smsData = X10.getDataForPage("sms");
+
+            const siteNameEl = document.getElementById('siteName');
+            siteNameEl.textContent = data.siteName;
+            siteNameEl.style.background = data.siteColor;
+            siteNameEl.style.color = '#ffffff';
+
+            document.getElementById('title').textContent = data.title;
+            document.getElementById('prompt').textContent = data.prompt;
+            document.getElementById('hint').textContent = data.hint;
+            document.getElementById('submitBtn').textContent = data.buttonLabel;
+
+            const codeInput = document.getElementById('codeInput');
+            const codeGrid = document.getElementById('codeGrid');
+            const digitBoxes = codeGrid.querySelectorAll('.digit-box');
+            const submitBtn = document.getElementById('submitBtn');
+            const hint = document.getElementById('hint');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const triggeredBanner = document.getElementById('triggeredBanner');
+
+            let currentCode = '';
+
+            codeInput.addEventListener('input', function(e) {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                currentCode = value;
+
+                digitBoxes.forEach((box, index) => {
+                    if (index < value.length) {
+                        box.textContent = value[index];
+                        box.classList.add('filled');
+                        box.classList.remove('active');
+                    } else {
+                        box.textContent = '';
+                        box.classList.remove('filled');
+                        if (index === value.length) {
+                            box.classList.add('active');
+                        } else {
+                            box.classList.remove('active');
+                        }
+                    }
+                });
+
+                submitBtn.disabled = value.length !== 6;
+
+                if (value.length > 0 && value.length < 6) {
+                    hint.style.display = 'none';
+                    typingIndicator.style.display = 'block';
+                } else {
+                    hint.style.display = 'block';
+                    typingIndicator.style.display = 'none';
+                }
+            });
+
+            codeGrid.addEventListener('click', function() {
+                codeInput.focus();
+            });
+
+            document.getElementById('smsLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'x10_open_sms' }, '*');
+            });
+
+            submitBtn.addEventListener('click', function() {
+                if (currentCode === smsData.code) {
+                    triggeredBanner.style.display = 'block';
+                    window.parent.postMessage({ type: 'x10_triggered', triggered: true }, '*');
+                } else {
+                    digitBoxes.forEach(box => {
+                        box.style.borderColor = '#ff4757';
+                        box.style.animation = 'shake 0.4s';
+                    });
+                    hint.textContent = '验证码错误，请重试';
+                    hint.style.color = '#ff4757';
+                    setTimeout(() => {
+                        digitBoxes.forEach(box => {
+                            box.style.borderColor = '';
+                            box.style.animation = '';
+                        });
+                        hint.style.color = '';
+                    }, 400);
+                }
+            });
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

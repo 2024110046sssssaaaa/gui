@@ -1,0 +1,93 @@
+Received: from mail.company-finance.cn (mail.company-finance.cn [101.200.88.120])
+        by mx.google.com with ESMTPS id bx8-20020a5d350c0000000b001d94b5d6e7g
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Mon, 16 Mar 2026 11:30:00 -0700 (PDT)
+Date: Mon, 16 Mar 2026 11:30:00 -0700
+From: Finance Department <finance@company-finance.cn>
+Reply-To: accountspayable@company-finance.cn
+To: user@gmail.com
+Subject: =?UTF-8?B?6Yiv7tip7tq67d2s7Imo7dip6dup7dKp7dSi?= - March 2026 Electronic Invoice & Statement
+Message-ID: <20260316113000@companyfinance.cn>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_55555_6666666666"
+X-Mailer: Foxmail 7.2
+
+------====_Part_55555_6666666666
+Content-Type: multipart/alternative; boundary="----=_SubPart_55555_6666666666"
+
+------=_SubPart_55555_6666666666
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Employee,
+
+Please find attached your March 2026 electronic invoice and reconciliation statement.
+
+This month's documents include:
+- Monthly Expense Invoice (电子发票)
+- Account Reconciliation Statement (对账单)
+- Digital Signature Authorization
+
+Please review the amounts and sign the attached documents to authorize payment processing.
+
+Attachment: March_2026_Invoice_Statement.pdf
+
+Deadline: Please review and sign within 3 business days.
+
+Finance Department
+Phone: 010-12345678
+
+------=_SubPart_55555_6666666666
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: #1565c0; color: white; padding: 20px; text-align: center; }
+.info-box { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 15px; margin: 20px 0; }
+.doc-item { background: #fff3e0; padding: 10px; margin: 10px 0; border-radius: 4px; }
+.signature-line { border-bottom: 1px solid #333; width: 200px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Finance Department - Monthly Invoice</h1>
+</div>
+<div class="info-box">
+<p>Dear Employee,</p>
+<p>Please find attached your <strong>March 2026</strong> expense documents for review.</p>
+</div>
+<p>This month's documents include:</p>
+<div class="doc-item">
+<p><strong>1. Monthly Expense Invoice (电子发票)</strong></p>
+<p><strong>2. Account Reconciliation Statement (对账单)</strong></p>
+<p><strong>3. Digital Signature Authorization</strong></p>
+</div>
+<p>Please review the amounts carefully and sign the attached documents to authorize payment processing.</p>
+<div class="signature-line">
+<p>Employee Signature</p>
+</div>
+<p style="color:#c62828;"><strong>Deadline: Please review and sign within 3 business days.</strong></p>
+<hr>
+<p style="color:#666; font-size:12px;">Attachment: March_2026_Invoice_Statement.pdf</p>
+<p>Finance Department<br>Phone: 010-12345678</p>
+</div>
+</body>
+</html>
+
+------=_SubPart_55555_6666666666--
+Content-Type: application/pdf; name="March_2026_Invoice_Statement.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="March_2026_Invoice_Statement.pdf"; size=1048576
+
+JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUg
+
+------====_Part_55555_6666666666--
+

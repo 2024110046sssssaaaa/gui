@@ -1,0 +1,99 @@
+Received: from mx1.sf-express.com (mx1.sf-express.com [203.95.100.55])
+        by mx.google.com with ESMTPS id vx5-20020a5d0500000000b001d91e2a3b4d
+        for <user@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384);
+        Thu, 19 Mar 2026 14:32:15 -0700 (PDT)
+Date: Thu, 19 Mar 2026 14:32:15 -0700
+From: SF Express Delivery <delivery-notification@sf-express-logistics.com>
+Reply-To: customer.service@sf-express-logistics.com
+To: user@gmail.com
+Subject: =?UTF-8?B?6Iaj6Jiu7Jiu7Jiu6di76dii7Iei7dij6Yin6ZGi7dqn6dqp?= - Delivery Exception Notice
+Message-ID: <D20260319-14321501@sf-express.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_67890_1234567890"
+X-Mailer: Microsoft Outlook 16.0
+
+------====_Part_67890_1234567890
+Content-Type: multipart/alternative; boundary="----=_SubPart_67890_1234567890"
+
+------=_SubPart_67890_1234567890
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Dear Customer,
+
+Your package (Tracking No.: SF1234567890) could not be delivered successfully due to an address exception.
+
+Delivery Exception Details:
+- Exception Type: Address incomplete/Contact failed
+- Previous Delivery Attempt: March 18, 2026
+- Current Status: Pending re-delivery
+
+To reschedule your delivery, please:
+1. Download the attached "Delivery Confirmation Form"
+2. Fill in your correct address and contact information
+3. The form will automatically submit to our logistics system
+
+Please complete this process within 48 hours, otherwise your package will be returned to the sender.
+
+Attachment: delivery_confirmation_form.xlsx
+
+Contact us:
+Phone: 4008-111-111
+Email: customer.service@sf-express-logistics.com
+
+SF Express
+Customer Service Department
+
+------=_SubPart_67890_1234567890
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f5f5f5; }
+.container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; }
+.header { background: #e31837; color: white; padding: 20px; text-align: center; }
+.alert-box { background: #fff3cd; border: 1px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 5px; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+td { padding: 10px; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h2>SF Express - Delivery Exception Notice</h2>
+</div>
+<div class="alert-box">
+<p><strong>⚠️ Your package could not be delivered!</strong></p>
+<p>Tracking No.: <strong>SF1234567890</strong></p>
+</div>
+<p>Dear Customer,</p>
+<p>Your package delivery has encountered an exception. Please complete the following steps to reschedule:</p>
+<ol>
+<li>Download the attached <strong>Delivery Confirmation Form</strong></li>
+<li>Open the file and <strong>fill in your correct address</strong></li>
+<li>Save and the form will submit automatically</li>
+</ol>
+<table>
+<tr><td><strong>Exception Type:</strong></td><td>Address incomplete / Contact failed</td></tr>
+<tr><td><strong>Previous Attempt:</strong></td><td>March 18, 2026</td></tr>
+<tr><td><strong>Deadline:</strong></td><td>48 hours</td></tr>
+</table>
+<p>If you do not respond within 48 hours, your package will be returned to sender.</p>
+<hr>
+<p style="color:#666; font-size:12px;">Attachment: delivery_confirmation_form.xlsx</p>
+</div>
+</body>
+</html>
+
+------=_SubPart_67890_1234567890--
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; name="delivery_confirmation_form.xlsx"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="delivery_confirmation_form.xlsx"; size=524288
+
+UEsDBBQABgAIAAAAIQC2gfiSAAAAAAA=
+

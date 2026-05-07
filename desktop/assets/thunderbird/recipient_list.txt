@@ -1,0 +1,5 @@
+alice@example.com
+bob@company.com
+carol@partner.org
+david@vendor.net
+emma@client.io

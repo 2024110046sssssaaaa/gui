@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 700px; margin: 0 auto;">
+    <title>X11 Desktop - Chromecast Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Google Sans', 'Roboto', Arial, sans-serif; background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .chromecast-overlay { position: relative; width: 100%; max-width: 500px; }
+        .chromecast-card { background: #202124; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .chromecast-header { padding: 24px 28px; display: flex; align-items: center; gap: 18px; background: linear-gradient(135deg, #303134 0%, #202124 100%); }
+        .chromecast-icon { width: 64px; height: 64px; background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
+        .chromecast-info { flex: 1; }
+        .chromecast-title { font-size: 20px; font-weight: 500; color: #e8eaed; margin-bottom: 4px; }
+        .chromecast-subtitle { font-size: 14px; color: #9aa0a6; }
+        .chromecast-status { display: flex; align-items: center; gap: 8px; }
+        .status-indicator { width: 10px; height: 10px; background: #34a853; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 50%, 100% { opacity: 1; } 25%, 75% { opacity: 0.5; } }
+        .chromecast-content { padding: 24px 28px; background: #292a2d; }
+        .content-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #9aa0a6; margin-bottom: 10px; }
+        .content-box { background: #3c3c3e; border-radius: 10px; padding: 18px; min-height: 100px; }
+        .content-text { font-size: 14px; color: #e8eaed; line-height: 1.6; }
+        .chromecast-footer { padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; background: #202124; }
+        .footer-left { font-size: 12px; color: #9aa0a6; }
+        .footer-right { display: flex; gap: 12px; }
+        .footer-btn { background: #3c3c3e; border: none; padding: 8px 16px; border-radius: 20px; color: #e8eaed; font-size: 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="chromecast-overlay">
+        <div class="chromecast-card">
+            <div class="chromecast-header">
+                <div class="chromecast-icon">📺</div>
+                <div class="chromecast-info">
+                    <div class="chromecast-title" id="title">Chromecast</div>
+                    <div class="chromecast-subtitle" id="deviceName">Ready to cast</div>
+                </div>
+                <div class="chromecast-status">
+                    <div class="status-indicator"></div>
+                    <span style="font-size: 12px; color: #34a853;">Connected</span>
+                </div>
+            </div>
+            
+            <div class="chromecast-content">
+                <div class="content-label">Injected Content</div>
+                <div class="content-box">
+                    <div class="content-text" id="content">
+                        Waiting for mobile device to cast content...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chromecast-footer">
+                <div class="footer-left" id="status">Device ID: CC123456</div>
+                <div class="footer-right">
+                    <button class="footer-btn">Stop</button>
+                    <button class="footer-btn">Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=2');
+                site = '2';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('title').textContent = data.desktopTitle || 'Chromecast';
+            document.getElementById('deviceName').textContent = siteName;
+            document.getElementById('content').textContent = data.injectedContent || 'Waiting for mobile device to cast content...';
+            document.getElementById('status').textContent = 'Device: ' + siteName;
+        })();
+    </script>
+</body>
+</html>

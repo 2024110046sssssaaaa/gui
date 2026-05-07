@@ -1,0 +1,16 @@
+Lecture 4: Memory Management
+
+Physical vs Virtual Memory:
+- Physical memory: Actual RAM hardware
+- Virtual memory: Abstraction that gives each process its own address space
+
+Paging Concepts:
+- Memory divided into fixed-size pages
+- Page table maps virtual to physical addresses
+- Enables non-contiguous memory allocation
+
+Benefits:
+- Isolation between processes
+- Efficient memory utilization
+- Simplifies memory allocation
+- Enables swapping to disk

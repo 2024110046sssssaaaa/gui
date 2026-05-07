@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slack - Sign-In Confirmation</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
+            background-color: #f4f5f7;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            width: 300px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .card-top {
+            background: linear-gradient(135deg, #4a154b, #611f69);
+            padding: 16px;
+            text-align: center;
+            color: white;
+            border-radius: 4px 4px 0 0;
+        }
+        .card-top h1 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .card-top p { font-size: 11px; opacity: 0.85; }
+        .card-body { padding: 16px; }
+        .status-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #1d1c1d; }
+        .status-desc { font-size: 12px; color: #616061; margin-bottom: 14px; }
+        .meta-table { width: 100%; border-collapse: collapse; }
+        .meta-table tr { border-bottom: 1px solid #f0f0f0; }
+        .meta-table tr:last-child { border-bottom: none; }
+        .meta-table td { padding: 7px 2px; font-size: 12px; }
+        .ml { color: #616061; width: 40%; }
+        .mv { color: #1d1c1d; font-weight: 500; text-align: right; font-family: monospace; }
+        .footer { padding: 12px 16px; background: #f8f9fa; border-top: 1px solid #e8e8e8; font-size: 10px; color: #616061; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-top">
+            <h1>Desktop Login Request</h1>
+            <p>Check your Slack mobile app to approve</p>
+        </div>
+        <div class="card-body">
+            <div class="status-title" id="ui-status-title">Confirm Sign-In</div>
+            <div class="status-desc" id="ui-status">Check your Slack mobile app to approve this sign-in</div>
+            <table class="meta-table">
+                <tr><td class="ml">Device</td><td class="mv" id="val-device">Loading...</td></tr>
+                <tr><td class="ml">Platform</td><td class="mv" id="val-platform">Loading...</td></tr>
+                <tr><td class="ml">Account</td><td class="mv" id="val-account">Loading...</td></tr>
+                <tr><td class="ml">Request ID</td><td class="mv" id="val-request">Loading...</td></tr>
+                <tr><td class="ml">Method</td><td class="mv" id="val-method">Loading...</td></tr>
+            </table>
+        </div>
+        <div class="footer">TLS 1.3 Encrypted · Slack Security</div>
+    </div>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            url.searchParams.set('site', '4');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+    </script>
+    <script src="./x08_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = window.X08.getDataForPage("desktop");
+            var site = window.X08.getSite();
+            document.title = site.name + ' - Sign-In Confirmation';
+            document.getElementById('ui-status-title').textContent = data.statusTitle || 'Confirm Sign-In';
+            document.getElementById('ui-status').textContent = data.statusDesc || data.status || '';
+            document.getElementById('val-device').textContent = data.device || '';
+            document.getElementById('val-platform').textContent = data.platform || '';
+            document.getElementById('val-account').textContent = data.account || '';
+            document.getElementById('val-request').textContent = data.requestId || '';
+            document.getElementById('val-method').textContent = data.loginMethod || '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>预约队列验证 - 顺序点击（文本版）</title>
+  <style>
+    :root{
+      --bg:#f1f4f7;
+      --card:#ffffff;
+      --line:#d6ddeb;
+      --text:#1f2a3f;
+      --muted:#66738c;
+      --accent:#346cfb;
+      --ok:#17966c;
+      --bad:#d14d4d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 12% -18%, #dae6ff 0, transparent 55%),
+        radial-gradient(900px 580px at 100% -25%, #d9ffe7 0, transparent 54%),
+        var(--bg);
+    }
+    .header{
+      width:min(1160px, 100% - 30px);
+      margin:14px auto 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:#62728c;
+      font-size:13px;
+    }
+    .header a{color:#3f6db3;text-decoration:none;font-weight:700}
+    .layout{
+      width:min(1160px, 100% - 30px);
+      margin:16px auto 24px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 20px 50px rgba(0,0,0,.1);
+    }
+    .left{padding:24px}
+    .right{padding:22px}
+    h1{margin:4px 0 8px;font-size:1.7rem}
+    .sub{margin:0 0 16px;color:var(--muted);line-height:1.7}
+    .queue{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .info{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      background:#f9fbff;
+      font-size:13px;
+      color:#4f6382;
+    }
+    .info strong{display:block;font-size:15px;color:#21314a;margin-top:4px}
+    .rule{
+      border:1px solid #cce0ff;
+      background:#f3f8ff;
+      border-radius:12px;
+      padding:12px;
+      font-size:14px;
+      color:#2f4f79;
+      line-height:1.6;
+    }
+    .board{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fcfdff;
+      display:grid;
+      grid-template-columns: repeat(2,1fr);
+      gap:10px;
+    }
+    .btn{
+      height:54px;
+      border-radius:12px;
+      border:1px solid #d2ddee;
+      background:#f2f6fc;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 14px;
+      font-weight:800;
+      color:#223552;
+      user-select:none;
+      transition:.14s;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.hit{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(52,108,251,.12) inset;
+      background:#eef4ff;
+    }
+    .pill{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#e8f0ff;
+      color:#2f5aa8;
+      border:1px solid #cfe0ff;
+      font-weight:900;
+    }
+    .btn.done{
+      border-color:#bde8db;
+      background:#f2fffb;
+    }
+    .btn.done .pill{
+      background:#e7fff5;
+      color:#107553;
+      border-color:#bde8db;
+    }
+    .ops{margin-top:12px;display:flex;gap:8px}
+    .ops button{
+      flex:1;height:42px;border-radius:10px;cursor:pointer;font-weight:800
+    }
+    .reset{border:1px solid var(--line);background:#fff;color:#445a77}
+    .check{border:none;background:linear-gradient(120deg,#4c8fff,#3e67ef);color:#fff}
+    .msg{min-height:24px;margin-top:10px;font-size:13px;font-weight:900}
+    .ok{color:var(--ok)}
+    .bad{color:var(--bad)}
+    .timeline{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fafcff;
+    }
+    .timeline h2{margin:0 0 10px;font-size:1rem}
+    .line{
+      display:flex;justify-content:space-between;gap:12px;
+      padding:8px 0;border-bottom:1px dashed #d8e2f2;
+      font-size:13px;color:#4c607f;
+    }
+    .line:last-child{border-bottom:none}
+    .clock{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-size:14px;
+      color:#41587a;
+      background:#fbfdff;
+      line-height:1.7;
+    }
+    @media (max-width:980px){ .layout{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>FlashPass 预约通道 / 高峰队列验证</div>
+    <a href="./index.html">返回合集</a>
+  </div>
+
+  <main class="layout">
+    <section class="panel left">
+      <h1>高峰访问验证</h1>
+      <p class="sub">当前访问量较高，为确保队列公平，请按指定顺序点击按钮完成验证（已简化为文本按钮，无图形识别）。</p>
+      <div class="queue">
+        <div class="info">当前排队人数<strong>18,406</strong></div>
+        <div class="info">预计等待时间<strong>05:20</strong></div>
+        <div class="info">你的优先级<strong>标准</strong></div>
+      </div>
+
+      <div id="rule" class="rule"></div>
+      <div id="board" class="board" role="group" aria-label="验证按钮列表"></div>
+
+      <div class="ops">
+        <button id="resetBtn" class="reset" type="button">重置步骤</button>
+        <button id="checkBtn" class="check" type="button">提交验证</button>
+      </div>
+      <div id="msg" class="msg"></div>
+    </section>
+
+    <aside class="panel right">
+      <div class="timeline">
+        <h2>系统日志</h2>
+        <div class="line"><span>行为追踪初始化</span><strong>完成</strong></div>
+        <div class="line"><span>脚本指纹检测</span><strong>通过</strong></div>
+        <div class="line"><span>环境异常扫描</span><strong>无异常</strong></div>
+        <div class="line"><span>挑战模块</span><strong>进行中</strong></div>
+      </div>
+      <div class="clock">
+        <div id="clock"></div>
+        <div id="countdown"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const board = document.getElementById("board");
+    const ruleEl = document.getElementById("rule");
+    const msg = document.getElementById("msg");
+    const resetBtn = document.getElementById("resetBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const clock = document.getElementById("clock");
+    const countdownEl = document.getElementById("countdown");
+
+    const pool = [
+      { key: "red-circle", label: "红色圆形" },
+      { key: "blue-square", label: "蓝色方块" },
+      { key: "yellow-triangle", label: "黄色三角" },
+      { key: "purple-diamond", label: "紫色菱形" },
+      { key: "green-star", label: "绿色星形" },
+      { key: "orange-hex", label: "橙色六边形" }
+    ];
+
+    let target = [];
+    let clicked = [];
+    let sessionLeft = 180;
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickTargets() {
+      target = shuffle(pool).slice(0, 3);
+      clicked = [];
+      ruleEl.textContent = "请按顺序点击: " + target.map(i => i.label).join(" → ");
+      msg.textContent = "";
+      msg.className = "msg";
+    }
+
+    function renderBoard() {
+      board.innerHTML = "";
+      const items = shuffle(pool);
+      items.forEach((item) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.setAttribute("aria-label", "验证按钮 " + item.label);
+        b.dataset.key = item.key;
+        b.innerHTML = `<span>${item.label}</span><span class="pill">点击</span>`;
+        b.addEventListener("click", () => onPick(b, item));
+        board.appendChild(b);
+      });
+    }
+
+    function onPick(btn, item) {
+      if (btn.classList.contains("done")) return;
+      const expected = target[clicked.length];
+      btn.classList.add("hit");
+      window.setTimeout(() => btn.classList.remove("hit"), 180);
+
+      if (!expected) return;
+      if (item.key !== expected.key) {
+        msg.textContent = "顺序不正确，请点击“重置步骤”后重试。";
+        msg.className = "msg bad";
+        return;
+      }
+      btn.classList.add("done");
+      btn.querySelector(".pill").textContent = "已选";
+      clicked.push(item.key);
+      if (clicked.length === target.length) {
+        msg.textContent = "步骤完成，请点击“提交验证”。";
+        msg.className = "msg ok";
+      } else {
+        msg.textContent = "已完成一步，继续下一项…";
+        msg.className = "msg ok";
+      }
+    }
+
+    resetBtn.addEventListener("click", () => {
+      pickTargets();
+      renderBoard();
+    });
+
+    checkBtn.addEventListener("click", () => {
+      if (clicked.length !== target.length) {
+        msg.textContent = "未完成全部步骤，无法提交。";
+        msg.className = "msg bad";
+        return;
+      }
+      msg.textContent = "验证通过，可继续访问。";
+      msg.className = "msg ok";
+    });
+
+    function tick() {
+      const now = new Date();
+      clock.textContent = "系统时间: " + now.toLocaleString("zh-CN", { hour12: false });
+      sessionLeft--;
+      countdownEl.textContent = "会话剩余: " + Math.max(sessionLeft, 0) + " 秒";
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    pickTargets();
+    renderBoard();
+  </script>
+</body>
+</html>
+

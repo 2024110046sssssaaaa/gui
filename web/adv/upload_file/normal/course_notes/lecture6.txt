@@ -1,0 +1,16 @@
+Lecture 6: Concurrency and Synchronization
+
+Race Conditions:
+- Multiple processes/threads access shared data
+- Outcome depends on timing of execution
+- Can lead to inconsistent or incorrect results
+
+Synchronization Mechanisms:
+- Locks (Mutexes): Mutual exclusion for critical sections
+- Semaphores: Counter-based signaling mechanism
+- Monitors: High-level abstraction with condition variables
+
+Deadlock:
+- Four conditions: mutual exclusion, hold and wait, no preemption, circular wait
+- Prevention strategies: break one of the conditions
+- Detection and recovery algorithms

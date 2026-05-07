@@ -1,0 +1,4 @@
+hr@company.com
+legal@company.com
+finance@company.com
+ceo@company.com

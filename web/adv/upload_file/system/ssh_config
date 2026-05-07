@@ -1,0 +1,24 @@
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    StrictHostKeyChecking no
+
+Host production
+    HostName 192.168.1.100
+    User admin
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    ForwardAgent yes
+
+Host database
+    HostName 10.0.0.50
+    User dbuser
+    Port 2222
+    IdentityFile ~/.ssh/id_rsa_db
+
+Host backup-server
+    HostName backup.example.com
+    User backup
+    Port 22
+    IdentityFile ~/.ssh/backup_key

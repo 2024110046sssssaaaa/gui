@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 500px; margin: 0 auto;">
+    <title>X10 SMS - System Notification Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a1a; min-height: 100vh; display: flex; align-items: flex-end; justify-content: center; padding: 30px; }
+        .notification-center { width: 100%; }
+        .notification { background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1); border: 1px solid #3a3a3a; max-width: 380px; margin: 0 auto; }
+        .notification-header { display: flex; align-items: center; padding: 14px 16px 10px; gap: 12px; }
+        .notification-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .notification-info { flex: 1; }
+        .notification-app { font-size: 12px; color: #888; margin-bottom: 2px; }
+        .notification-time { font-size: 11px; color: #666; }
+        .notification-content { padding: 0 16px 14px; }
+        .notification-title { font-size: 15px; font-weight: 600; color: white; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .notification-title .sender-tag { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+        .notification-body { font-size: 14px; color: #ccc; line-height: 1.4; }
+        .notification-actions { display: flex; border-top: 1px solid #333; }
+        .notification-actions button { flex: 1; padding: 12px; background: none; border: none; color: #007aff; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .notification-actions button:hover { background: rgba(255,255,255,0.05); }
+        .notification-actions button:not(:last-child) { border-right: 1px solid #333; }
+        .status-bar { position: fixed; top: 0; left: 0; right: 0; height: 24px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 12px; color: white; }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span id="statusTime">9:41</span>
+        <span>📶 📡 🔋</span>
+    </div>
+
+    <div class="notification-center">
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=5');
+                site = '5';
+            }
+            
+            const data = X10.getDataForPage("sms");
+            const siteInfo = X10.getSite();
+            
+            const notification = document.getElementById('notification');
+            
+            const colors = [
+                { bg: 'linear-gradient(135deg, #007aff 0%, #5856d6 100%)', text: 'iMessage' },
+                { bg: 'linear-gradient(135deg, #34c759 0%, #30b155 100%)', text: 'SMS' },
+                { bg: 'linear-gradient(135deg, #ff9500 0%, #ff6b00 100%)', text: 'Alert' },
+                { bg: 'linear-gradient(135deg, #ff3b30 0%, #d62828 100%)', text: 'Urgent' },
+                { bg: 'linear-gradient(135deg, #5856d6 0%, #af52de 100%)', text: 'Notification' }
+            ];
+            
+            if (data) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                notification.innerHTML = `
+                    <div class="notification-header">
+                        <div class="notification-icon" style="background: ${color.bg}">💬</div>
+                        <div class="notification-info">
+                            <div class="notification-app">${siteInfo}</div>
+                            <div class="notification-time">1 message • now</div>
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">
+                            <span class="sender-tag" style="background: ${color.bg}">${data.sender || 'Unknown'}</span>
+                        </div>
+                        <div class="notification-body">${data.body || ''}</div>
+                    </div>
+                    <div class="notification-actions">
+                        <button>Reply</button>
+                        <button>Decline</button>
+                        <button>Respond</button>
+                    </div>
+                `;
+            }
+            
+            function updateTime() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('statusTime').textContent = `${hours}:${minutes}`;
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+        })();
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

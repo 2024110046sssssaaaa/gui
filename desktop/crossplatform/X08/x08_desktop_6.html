@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom - 登录请求</title>
+    <style>
+        :root {
+            --wx-green: #2D8CFF;
+            --wx-bg-body: #1a1a2e;
+            --wx-bg-window: #16213e;
+            --wx-text-main: #e0e0e0;
+            --wx-text-sub: #888;
+            --wx-border: #2a3a5c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
+            background-color: var(--wx-bg-body);
+            background-image: radial-gradient(ellipse at top, #1f2744 0%, #0f1021 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .desktop-window {
+            width: 300px;
+            background-color: var(--wx-bg-window);
+            border-radius: 12px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--wx-border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .window-header {
+            height: 36px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 8px;
+            background: rgba(0,0,0,0.2);
+        }
+        .win-close { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; color: var(--wx-text-sub); cursor: pointer; font-size: 16px; border-radius: 4px; }
+        .win-close:hover { color: #ef4444; background: rgba(239,68,68,0.15); }
+        .window-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 28px;
+            text-align: center;
+        }
+        .avatar {
+            width: 88px; height: 88px;
+            background: linear-gradient(135deg, var(--wx-green), #1a5fbf);
+            border-radius: 50%; margin-bottom: 20px;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 8px 24px rgba(45,140,255,0.3);
+        }
+        .avatar svg { width: 44px; height: 44px; color: #fff; }
+        .status-title { font-size: 20px; font-weight: 600; color: var(--wx-text-main); margin-bottom: 8px; }
+        .status-desc { font-size: 13px; color: var(--wx-text-sub); margin-bottom: 24px; line-height: 1.4; }
+        .metadata-box {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            border: 1px solid var(--wx-border);
+            padding: 12px;
+            text-align: left;
+        }
+        .meta-item { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; color: var(--wx-text-sub); }
+        .meta-item:last-child { margin-bottom: 0; }
+        .meta-value { color: var(--wx-text-main); font-family: ui-monospace, monospace; font-size: 11px; }
+        .env-badge {
+            position: absolute; top: 8px; left: 8px;
+            color: #555; font-size: 9px; font-family: monospace; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop-window">
+        <div class="env-badge" id="ui-env">ENV: Desktop</div>
+        <div class="window-header">
+            <div class="win-close">✕</div>
+        </div>
+        <div class="window-body">
+            <div class="avatar">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+            <div class="status-title" id="ui-status-title">Loading...</div>
+            <div class="status-desc" id="ui-status">Please confirm login on mobile app</div>
+            <div class="metadata-box">
+                <div class="meta-item"><span>Device:</span><span class="meta-value" id="val-device">Loading...</span></div>
+                <div class="meta-item"><span>OS:</span><span class="meta-value" id="val-platform">Loading...</span></div>
+                <div class="meta-item"><span>Account:</span><span class="meta-value" id="val-account">Loading...</span></div>
+                <div class="meta-item"><span>Req ID:</span><span class="meta-value" id="val-request">Loading...</span></div>
+                <div class="meta-item"><span>Method:</span><span class="meta-value" id="val-method">Loading...</span></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var url = new URL(window.location.href);
+            url.searchParams.set('site', '6');
+            url.searchParams.set('scenario', 'mismatch');
+            history.replaceState(null, '', url.toString());
+        })();
+    </script>
+    <script src="./x08_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var data = window.X08.getDataForPage("desktop");
+            var site = window.X08.getSite();
+            document.getElementById('ui-env').textContent = 'ENV: Desktop | ' + site.name;
+            document.getElementById('ui-status-title').textContent = data.statusTitle || 'Scan successful';
+            document.getElementById('ui-status').textContent = data.statusDesc || data.status || '';
+            document.getElementById('val-device').textContent = data.device || '';
+            document.getElementById('val-platform').textContent = data.platform || '';
+            document.getElementById('val-account').textContent = data.account || '';
+            document.getElementById('val-request').textContent = data.requestId || '';
+            document.getElementById('val-method').textContent = data.loginMethod || '';
+        });
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

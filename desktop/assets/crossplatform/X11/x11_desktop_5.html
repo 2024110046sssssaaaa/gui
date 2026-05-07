@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 650px; margin: 0 auto;">
+    <title>X11 Desktop - Generic TV Casting Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'SamsungOne', 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .tv-cast-container { width: 100%; max-width: 520px; }
+        .tv-cast-frame { background: #111; border-radius: 20px; overflow: hidden; border: 2px solid #333; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .tv-cast-header { padding: 28px 32px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); text-align: center; border-bottom: 1px solid #2a2a3a; }
+        .tv-cast-icon { width: 72px; height: 72px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+        .tv-cast-title { font-size: 24px; font-weight: 600; color: white; margin-bottom: 6px; }
+        .tv-cast-subtitle { font-size: 14px; color: #8888aa; }
+        .tv-cast-body { padding: 28px 32px; background: #0f0f1a; }
+        .tv-cast-status { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; }
+        .status-ring { width: 14px; height: 14px; border: 2px solid #667eea; border-radius: 50%; position: relative; }
+        .status-ring::after { content: ''; position: absolute; top: 2px; left: 2px; width: 6px; height: 6px; background: #667eea; border-radius: 50%; }
+        .status-text { font-size: 13px; color: #8888aa; }
+        .tv-cast-preview { background: #1a1a2e; border-radius: 14px; padding: 22px; min-height: 120px; border: 1px solid #2a2a3a; }
+        .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .preview-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #667eea; }
+        .preview-badge { background: #667eea33; padding: 4px 10px; border-radius: 12px; font-size: 10px; color: #667eea; }
+        .preview-text { font-size: 15px; color: #ddd; line-height: 1.6; }
+        .tv-cast-footer { padding: 20px 32px; background: #0a0a14; display: flex; justify-content: space-between; align-items: center; }
+        .footer-device { display: flex; align-items: center; gap: 8px; }
+        .device-icon { width: 28px; height: 28px; background: #2a2a3a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .device-name { font-size: 12px; color: #8888aa; }
+        .footer-hint { font-size: 11px; color: #555; }
+        .cast-animation { animation: castPulse 2s ease-in-out infinite; }
+        @keyframes castPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="tv-cast-container">
+        <div class="tv-cast-frame">
+            <div class="tv-cast-header">
+                <div class="tv-cast-icon cast-animation">📺</div>
+                <div class="tv-cast-title" id="title">Smart View</div>
+                <div class="tv-cast-subtitle" id="deviceName">TV Display</div>
+            </div>
+            
+            <div class="tv-cast-body">
+                <div class="tv-cast-status">
+                    <div class="status-ring"></div>
+                    <span class="status-text" id="status">Waiting for connection...</span>
+                </div>
+                
+                <div class="tv-cast-preview">
+                    <div class="preview-header">
+                        <span class="preview-label">Screen Mirroring</span>
+                        <span class="preview-badge">HD Ready</span>
+                    </div>
+                    <div class="preview-text" id="content">
+                        Open the Smart View app on your mobile device and select this TV to start mirroring your screen.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tv-cast-footer">
+                <div class="footer-device">
+                    <div class="device-icon">📱</div>
+                    <span class="device-name">No device connected</span>
+                </div>
+                <span class="footer-hint">Mobile trigger required</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=5');
+                site = '5';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('title').textContent = data.desktopTitle || 'Smart View';
+            document.getElementById('deviceName').textContent = siteName + ' Display';
+            document.getElementById('status').textContent = data.desktopStatus || 'Waiting for connection...';
+            document.getElementById('content').textContent = data.injectedContent || 'Open the Smart View app on your mobile device and select this TV to start mirroring your screen.';
+        })();
+    </script>
+</body>
+</html>

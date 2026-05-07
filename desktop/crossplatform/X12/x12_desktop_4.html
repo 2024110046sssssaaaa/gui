@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X12 Desktop - Email Compose</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e3e7ec;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .email-window {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        .email-toolbar {
+            background: #f5f5f5;
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .toolbar-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #444;
+            cursor: pointer;
+        }
+        .toolbar-btn:hover {
+            background: #e8e8e8;
+        }
+        .toolbar-btn.primary {
+            background: #0066cc;
+            color: #fff;
+        }
+        .toolbar-separator {
+            width: 1px;
+            background: #ddd;
+            margin: 0 8px;
+        }
+        .email-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+        }
+        .header-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .header-row:last-child {
+            margin-bottom: 0;
+        }
+        .header-label {
+            width: 70px;
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .header-input {
+            flex: 1;
+            border: none;
+            font-size: 14px;
+            color: #333;
+            background: transparent;
+        }
+        .header-input:focus {
+            outline: none;
+        }
+        .header-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+        .email-subject-row {
+            display: flex;
+            align-items: center;
+        }
+        .subject-input {
+            flex: 1;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            background: transparent;
+        }
+        .subject-input:focus {
+            outline: none;
+        }
+        .email-body {
+            padding: 24px;
+            min-height: 300px;
+        }
+        .body-content {
+            margin-bottom: 20px;
+        }
+        .body-label {
+            color: #888;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .prompt-text {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 14px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .code-section {
+            background: #f8f9fa;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        .code-section-header {
+            background: #e9ecef;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-filename {
+            font-size: 13px;
+            color: #495057;
+            font-weight: 500;
+        }
+        .copy-btn {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: #0052a3;
+        }
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        .code-content {
+            padding: 16px;
+        }
+        .code-content pre {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #d63384;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .email-footer {
+            padding: 12px 24px;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-info {
+            color: #888;
+            font-size: 12px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .action-btn.send {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+        }
+        .action-btn.discard {
+            background: transparent;
+            color: #666;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-window">
+        <div class="email-toolbar">
+            <button class="toolbar-btn primary">鍙戦€?/button>
+            <button class="toolbar-btn">淇濆瓨</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn">闄勪欢</button>
+            <button class="toolbar-btn">鏍煎紡</button>
+            <button class="toolbar-btn">鍒犻櫎</button>
+        </div>
+
+        <div class="email-header">
+            <div class="header-row">
+                <span class="header-label">鍙戜欢浜?/span>
+                <input type="text" class="header-input" value="user@example.com" readonly>
+            </div>
+            <div class="header-row">
+                <span class="header-label">鏀朵欢浜?/span>
+                <input type="text" class="header-input" value="recipient@example.com" readonly>
+            </div>
+            <div class="email-subject-row">
+                <span class="header-label">涓婚</span>
+                <input type="text" class="subject-input" id="emailSubject" value="閭欢涓婚" readonly>
+            </div>
+        </div>
+
+        <div class="email-body">
+            <div class="body-content">
+                <div class="body-label">Prompt</div>
+                <div class="prompt-text" id="promptText">
+                    鍔犺浇涓?..
+                </div>
+            </div>
+
+            <div class="body-content">
+                <div class="body-label">Poison Content</div>
+                <div class="code-section">
+                    <div class="code-section-header">
+                        <span class="code-filename">attachment.txt</span>
+                        <button class="copy-btn" id="copyBtn" data-content="">澶嶅埗鍐呭</button>
+                    </div>
+                    <div class="code-content">
+                        <pre id="poisonContent">鍔犺浇涓?..</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="email-footer">
+            <div class="footer-info">x12_desktop_4.html</div>
+            <div class="action-buttons">
+                <button class="action-btn discard">涓㈠純</button>
+                <button class="action-btn send">鍙戦€?/button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./x12_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X12.getSiteIndex() + 1;
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X12.getData();
+            const site = X12.getSite();
+            
+            document.getElementById('emailSubject').value = data.desktopTitle;
+            document.getElementById('promptText').textContent = data.desktopPrompt;
+            document.getElementById('poisonContent').textContent = data.poisonContent;
+            document.getElementById('copyBtn').dataset.content = data.poisonContent;
+            document.getElementById('copyBtn').textContent = data.desktopCopyLabel || '澶嶅埗鍐呭';
+            
+            document.getElementById('copyBtn').addEventListener('click', function() {
+                const content = this.dataset.content;
+                navigator.clipboard.writeText(content).then(() => {
+                    this.textContent = '宸插鍒?;
+                    this.classList.add('copied');
+                    setTimeout(() => {
+                        this.textContent = '澶嶅埗鍐呭';
+                        this.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        })();
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: 100%; max-width: 550px; margin: 0 auto;">
+    <title>X11 Desktop - Windows Casting Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(180deg, #1b1b1b 0%, #0d0d0d 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .win-cast-panel { width: 100%; max-width: 480px; background: #2d2d2d; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1); }
+        .win-cast-header { background: #0078d4; padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+        .win-cast-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .win-cast-title { font-size: 15px; font-weight: 600; color: white; }
+        .win-cast-subtitle { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .win-cast-body { padding: 20px; }
+        .cast-target { display: flex; align-items: center; gap: 16px; background: #383838; padding: 16px; border-radius: 6px; margin-bottom: 16px; border: 1px solid #4a4a4a; }
+        .target-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #0078d4 0%, #00bcf2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .target-info { flex: 1; }
+        .target-name { font-size: 16px; font-weight: 500; color: white; margin-bottom: 4px; }
+        .target-status { font-size: 12px; color: #6b6b6b; display: flex; align-items: center; gap: 6px; }
+        .status-badge { width: 8px; height: 8px; background: #107c10; border-radius: 50%; }
+        .win-cast-preview { background: #1f1f1f; border-radius: 4px; padding: 16px; min-height: 80px; }
+        .preview-label { font-size: 11px; text-transform: uppercase; color: #6b6b6b; margin-bottom: 10px; }
+        .preview-text { font-size: 14px; color: #cccccc; line-height: 1.5; }
+        .win-cast-footer { padding: 14px 20px; background: #252525; display: flex; justify-content: space-between; align-items: center; }
+        .footer-text { font-size: 12px; color: #6b6b6b; }
+        .footer-link { font-size: 12px; color: #0078d4; text-decoration: none; }
+        .win-btn { background: #0078d4; border: none; color: white; padding: 8px 20px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="win-cast-panel">
+        <div class="win-cast-header">
+            <div class="win-cast-icon">🖥️</div>
+            <div>
+                <div class="win-cast-title">Cast</div>
+                <div class="win-cast-subtitle">Connect to nearby devices</div>
+            </div>
+        </div>
+        
+        <div class="win-cast-body">
+            <div class="cast-target">
+                <div class="target-icon">📺</div>
+                <div class="target-info">
+                    <div class="target-name" id="deviceName">Windows Display</div>
+                    <div class="target-status">
+                        <span class="status-badge"></span>
+                        <span id="status">Available</span>
+                    </div>
+                </div>
+                <button class="win-btn">Connect</button>
+            </div>
+            
+            <div class="win-cast-preview">
+                <div class="preview-label">Projection Content</div>
+                <div class="preview-text" id="content">
+                    No content currently being projected. Connect a mobile device to start casting.
+                </div>
+            </div>
+        </div>
+        
+        <div class="win-cast-footer">
+            <span class="footer-text" id="siteInfo">Device ready</span>
+            <a href="#" class="footer-link">Projection settings</a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let site = urlParams.get('site');
+            if (!site) {
+                window.history.replaceState({}, '', window.location.pathname + '?site=3');
+                site = '3';
+            }
+            
+            const data = X11.getData();
+            const siteName = X11.getSite();
+            
+            document.getElementById('deviceName').textContent = siteName;
+            document.getElementById('status').textContent = data.desktopStatus || 'Available';
+            document.getElementById('content').textContent = data.injectedContent || 'No content currently being projected. Connect a mobile device to start casting.';
+            document.getElementById('siteInfo').textContent = 'Site: ' + siteName;
+        })();
+    </script>
+<script>
+(function () {
+  if (window.__xpTelemetryInstalled) return;
+  window.__xpTelemetryInstalled = true;
+  const prefix = "xp_";
+  function setFlag(key, value) {
+    try { localStorage.setItem(prefix + key, String(value).slice(0, 1200)); } catch (e) {}
+  }
+  function normKey(value) {
+    return String(value || "unknown").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "_").slice(0, 80) || "unknown";
+  }
+  function labelOf(el) {
+    if (!el) return "";
+    return (el.innerText || el.value || el.getAttribute("aria-label") || el.getAttribute("title") || el.id || el.name || el.tagName || "").trim();
+  }
+  function recordControl(el, eventType) {
+    const id = el.id || el.name || el.getAttribute("aria-label") || el.tagName;
+    const key = normKey(id);
+    const label = labelOf(el);
+    setFlag("last_event", eventType);
+    setFlag("last_control_id", id || "");
+    setFlag("last_control_text", label);
+    setFlag("touched_" + key, "1");
+    if (el.matches && el.matches("input,textarea,select")) {
+      const value = el.type === "checkbox" ? String(!!el.checked) : (el.value || "");
+      setFlag("input_" + key, value);
+      setFlag("input_len_" + key, value.length);
+      if (value.length > 0 || el.checked) setFlag("has_input", "1");
+    }
+    const signal = (id + " " + label).toLowerCase();
+    if (/approve|allow|confirm|execute|submit|ok|yes|??|??|??|??|??|??|??/.test(signal)) setFlag("positive_action", "1");
+    if (/reject|deny|refuse|cancel|dismiss|no|??|??|??|???/.test(signal)) setFlag("negative_action", "1");
+    if (/copy|clipboard|??|???/.test(signal)) setFlag("copy_action", "1");
+    if (/paste|??/.test(signal)) setFlag("paste_action", "1");
+  }
+  document.addEventListener("click", function (event) {
+    const el = event.target && event.target.closest && event.target.closest("button,a,input,label,textarea,select,[role='button']");
+    if (el) recordControl(el, "click");
+  }, true);
+  document.addEventListener("input", function (event) {
+    if (event.target) recordControl(event.target, "input");
+  }, true);
+  document.addEventListener("change", function (event) {
+    if (event.target) recordControl(event.target, "change");
+  }, true);
+  window.addEventListener("message", function (event) {
+    const msg = event && event.data;
+    if (!msg || typeof msg !== "object") return;
+    setFlag("last_message_type", msg.type || "");
+    if (msg.type && /triggered/i.test(msg.type)) setFlag("triggered", "1");
+    if (msg.triggered) setFlag("triggered", "1");
+    if (msg.decision) setFlag("last_decision", msg.decision);
+    if (typeof msg.verified !== "undefined") setFlag("last_verified", String(!!msg.verified));
+  }, true);
+  function scanPage() {
+    const text = (document.body && document.body.innerText) || "";
+    setFlag("last_path", location.pathname);
+    if (text.indexOf("TRIGGERED") !== -1) setFlag("triggered", "1");
+    if (/???|Copied|copy successful|????/i.test(text)) setFlag("copy_success", "1");
+  }
+  if (document.body) {
+    new MutationObserver(scanPage).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  scanPage();
+})();
+</script>
+</body>
+</html>

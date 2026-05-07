@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X12 Mobile - Calculator Input</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: #000;
+            min-height: 100vh;
+        }
+        .calc-display {
+            padding: 20px;
+            text-align: right;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .calc-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .calc-value {
+            color: #fff;
+            font-size: 48px;
+            font-weight: 300;
+            line-height: 1.1;
+        }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #000;
+        }
+        .calc-btn {
+            aspect-ratio: 1;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.1s;
+        }
+        .calc-btn:active {
+            opacity: 0.7;
+        }
+        .calc-btn.num {
+            background: #333;
+            color: #fff;
+        }
+        .calc-btn.operator {
+            background: #ff9f0a;
+            color: #fff;
+        }
+        .calc-btn.function {
+            background: #a5a5a5;
+            color: #000;
+        }
+        .prompt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1c1c1e;
+            padding: 20px;
+            z-index: 100;
+        }
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .prompt-title {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .close-prompt {
+            color: #ff9f0a;
+            font-size: 16px;
+        }
+        .prompt-content {
+            background: #2c2c2e;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .prompt-text-label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .prompt-text-content {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .input-area {
+            background: #2c2c2e;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .input-label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .text-input {
+            width: 100%;
+            min-height: 80px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .text-input::placeholder {
+            color: #666;
+        }
+        .execute-btn {
+            width: 100%;
+            background: #ff9f0a;
+            color: #000;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .calc-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1c1c1e;
+        }
+        .footer-text {
+            color: #888;
+            font-size: 12px;
+        }
+        .triggered-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ff9f0a;
+            color: #000;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            z-index: 9999;
+        }
+        .triggered-overlay.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="prompt-overlay">
+        <div class="prompt-header">
+            <span class="prompt-title" id="calcTitle">计算器</span>
+            <span class="close-prompt">完成</span>
+        </div>
+
+        <div class="prompt-content">
+            <div class="prompt-text-label">Prompt</div>
+            <div class="prompt-text-content" id="promptText">
+                加载中...
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-label">粘贴区域</div>
+            <textarea class="text-input" id="textInput" placeholder="在此粘贴内容..."></textarea>
+        </div>
+
+        <button class="execute-btn" id="executeBtn">执行</button>
+    </div>
+
+    <div class="calc-display">
+        <div class="calc-label">RESULT</div>
+        <div class="calc-value">0</div>
+    </div>
+
+    <div class="calc-buttons">
+        <button class="calc-btn function">AC</button>
+        <button class="calc-btn function">±</button>
+        <button class="calc-btn function">%</button>
+        <button class="calc-btn operator">÷</button>
+        <button class="calc-btn num">7</button>
+        <button class="calc-btn num">8</button>
+        <button class="calc-btn num">9</button>
+        <button class="calc-btn operator">×</button>
+        <button class="calc-btn num">4</button>
+        <button class="calc-btn num">5</button>
+        <button class="calc-btn num">6</button>
+        <button class="calc-btn operator">−</button>
+        <button class="calc-btn num">1</button>
+        <button class="calc-btn num">2</button>
+        <button class="calc-btn num">3</button>
+        <button class="calc-btn operator">+</button>
+        <button class="calc-btn num">0</button>
+        <button class="calc-btn num">.</button>
+        <button class="calc-btn operator">=</button>
+    </div>
+
+    <div class="calc-footer">
+        <span class="footer-text">x12_mobile_5.html</span>
+        <span class="footer-text">计算器模式</span>
+    </div>
+
+    <div class="triggered-overlay" id="triggeredOverlay">
+        ⚠️ TRIGGERED ⚠️
+    </div>
+
+    <script src="./x12_data.js"></script>
+    <script>
+        (function() {
+            if (!location.search.includes('site=')) {
+                const site = X12.getSite();
+                location.href = location.pathname + '?site=' + site;
+            }
+            const data = X12.getData();
+            const site = X12.getSite();
+            
+            document.getElementById('calcTitle').textContent = data.mobileTitle;
+            document.getElementById('promptText').textContent = data.mobilePrompt;
+            
+            const poisonContent = data.poisonContent;
+            const textInput = document.getElementById('textInput');
+            
+            textInput.placeholder = data.mobilePlaceholder || '在此粘贴内容...';
+            
+            document.getElementById('executeBtn').textContent = data.mobileExecuteLabel || '执行';
+            document.getElementById('executeBtn').addEventListener('click', function() {
+                if (textInput.value.includes(poisonContent)) {
+                    document.getElementById('triggeredOverlay').classList.add('show');
+                    parent.postMessage({ type: 'x12_triggered', triggered: true }, '*');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

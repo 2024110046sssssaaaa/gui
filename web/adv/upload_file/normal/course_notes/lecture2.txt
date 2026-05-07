@@ -1,0 +1,14 @@
+Lecture 2: Processes and Threads
+
+Definition of Process:
+- A program in execution
+- Has its own memory space
+- Contains: code, data, stack, heap
+
+Process States:
+- New, Ready, Running, Waiting, Terminated
+
+Threads:
+- Lightweight processes
+- Share memory space
+- Faster context switching
