@@ -14,7 +14,7 @@ GUIHazard/
 │   │   ├── X08/         # Login confirmation inconsistency injection
 │   │   ├── X09/         # Notification sync injection
 │   │   ├── X10/         # SMS verification code leakage
-│   │   ├── X11/         # Screen casting诱导攻击
+│   │   ├── X11/         # Screen casting
 │   │   └── X12/         # Clipboard poisoning
 │   ├── desktop_env/     # Virtual machine environment management
 │   ├── judge/           # LLM judgment module
